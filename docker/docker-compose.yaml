@@ -3,19 +3,10 @@ version: '3.8'
 services:
   bevnet_nav2:
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     image: bevnet_nav2:latest
     container_name: bevnet_nav2_container
-    
-    # GPU支持
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     
     # 网络模式
     network_mode: host
@@ -26,8 +17,6 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
       - ROS_DOMAIN_ID=1
     
     # 挂载卷
@@ -37,13 +26,13 @@ services:
       - ${HOME}/.Xauthority:/root/.Xauthority:rw
       
       # 代码和数据
-      - ./src:/bevnet_nav2_ws/src:rw
-      - ./models:/bevnet_nav2_ws/models:rw
-      - ./data:/bevnet_nav2_ws/data:rw
-      - ./scripts:/bevnet_nav2_ws/scripts:rw
+      - ../src:/bevnet_nav2_ws/src:rw
+      - ../models:/bevnet_nav2_ws/models:rw
+      - ../data:/bevnet_nav2_ws/data:rw
+      - ../scripts:/bevnet_nav2_ws/scripts:rw
       
       # 配置文件
-      - ./config:/bevnet_nav2_ws/config:rw
+      - ../src/bevnet_nav2_bringup/config:/bevnet_nav2_ws/config:rw
     
     # 设备
     devices:

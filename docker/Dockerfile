@@ -1,4 +1,3 @@
-# Dockerfile
 FROM osrf/ros:humble-desktop-full
 
 # 设置环境变量
@@ -21,12 +20,6 @@ RUN apt-get update && apt-get install -y \
     libpcl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 安装CUDA（如果需要GPU支持）
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
-    dpkg -i cuda-keyring_1.0-1_all.deb && \
-    apt-get update && \
-    apt-get -y install cuda-toolkit-11-8
-
 # 安装Python依赖
 RUN pip3 install --upgrade pip && \
     pip3 install \
@@ -39,13 +32,8 @@ RUN pip3 install --upgrade pip && \
         scipy \
         pillow \
         pyyaml \
-        rospkg
-
-# 安装spconv
-RUN pip3 install spconv-cu118
-
-# 安装MinkowskiEngine（如果使用）
-RUN pip3 install -U MinkowskiEngine --install-option="--blas=openblas" -v
+        rospkg \
+        transforms3d
 
 # 创建工作空间
 RUN mkdir -p /bevnet_nav2_ws/src
@@ -59,6 +47,11 @@ RUN apt-get update && apt-get install -y \
     ros-humble-slam-toolbox \
     ros-humble-pcl-ros \
     ros-humble-pcl-conversions \
+    ros-humble-angles \
+    ros-humble-cv-bridge \
+    ros-humble-message-filters \
+    ros-humble-tf2-sensor-msgs \
+    ros-humble-tf2-geometry-msgs \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置entrypoint

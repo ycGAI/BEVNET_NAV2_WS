@@ -1,0 +1,24 @@
+# Core dependencies
+numpy>=1.24.3
+opencv-python>=4.8.0.74
+scipy>=1.10.0
+pillow>=9.5.0
+pyyaml>=6.0
+
+# Deep learning
+torch>=2.0.1
+torchvision>=0.15.2
+
+# ROS2 related
+transforms3d>=0.4.1
+pyquaternion>=0.9.9
+
+# MCAP support
+mcap>=1.1.1
+mcap-ros2-support>=0.5.3
+
+# Visualization
+matplotlib>=3.7.1
+
+# Optional but recommended
+tqdm>=4.65.0
