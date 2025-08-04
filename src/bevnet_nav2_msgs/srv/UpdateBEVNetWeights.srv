@@ -1,0 +1,20 @@
+# srv/UpdateBEVNetWeights.srv
+# Service to update BEVNet semantic-to-cost mapping weights
+
+# Request
+# Semantic class to cost mapping
+# Key: semantic class ID, Value: cost (0-255)
+uint8[] semantic_classes
+uint8[] cost_values
+
+# Weight for BEVNet layer in costmap fusion
+float32 bevnet_weight
+
+# Fusion method: "maximum", "weighted_average", "bevnet_priority"
+string fusion_method
+
+---
+
+# Response
+bool success
+string message

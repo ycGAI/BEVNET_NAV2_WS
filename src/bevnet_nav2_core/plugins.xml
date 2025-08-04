@@ -1,0 +1,15 @@
+<library path="bevnet_costmap_layer">
+    <class type="bevnet_nav2_core::BEVNetCostmapLayer" base_class_type="nav2_costmap_2d::Layer">
+      <description>
+        A costmap layer that integrates BEVNet semantic segmentation output
+      </description>
+    </class>
+  </library>
+  
+  <library path="bevnet_controller">
+    <class type="bevnet_nav2_core::BEVNetController" base_class_type="nav2_core::Controller">
+      <description>
+        A controller that uses BEVNet information for local path planning
+      </description>
+    </class>
+  </library>

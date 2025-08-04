@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>bevnet_nav2_bringup</name>
+  <version>0.1.0</version>
+  <description>Launch files and configurations for BEVNet Nav2 system</description>
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>bevnet_nav2_core</exec_depend>
+  <exec_depend>bevnet_nav2_msgs</exec_depend>
+  <exec_depend>mcap_replay</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_bt_navigator</exec_depend>
+  <exec_depend>nav2_controller</exec_depend>
+  <exec_depend>nav2_planner</exec_depend>
+  <exec_depend>nav2_recoveries</exec_depend>
+  <exec_depend>nav2_waypoint_follower</exec_depend>
+  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,76 @@
+# BEVNet specific parameters
+
+bevnet_inference_node:
+  ros__parameters:
+    model_path: "/bevnet_nav2_ws/models/bevnet_model.pth"
+    device: "cuda"
+    publish_rate: 10.0
+    visualize: true
+    
+    # BEV map parameters
+    map_size: 512
+    map_resolution: 0.2  # meters per pixel
+    map_range: 51.2      # meters
+    
+    # Semantic class mapping
+    semantic_to_cost:
+      0: 0      # road -> free
+      1: 20     # sidewalk -> low cost
+      2: 50     # building -> medium cost
+      3: 100    # wall -> high cost
+      4: 254    # obstacle -> lethal
+      5: -1     # unknown -> unknown
+    
+    # Point cloud parameters
+    min_range: 0.5
+    max_range: 50.0
+    min_height: -2.0
+    max_height: 2.0
+
+costmap_fusion:
+  ros__parameters:
+    fusion_method: "weighted_average"  # Options: weighted_average, maximum, bevnet_priority
+    bevnet_weight: 0.7
+    publish_rate: 10.0
+    
+    # Layer weights for semantic fusion
+    road_weight: 1.0
+    sidewalk_weight: 0.8
+    obstacle_weight: 1.0
+    vegetation_weight: 0.6
+
+path_visualizer:
+  ros__parameters:
+    global_path_color:
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      a: 0.7
+    local_path_color:
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      a: 1.0
+    path_width: 0.1
+    marker_lifetime: 0.0  # 0 means forever
+
+bevnet_controller:
+  ros__parameters:
+    # Velocity limits
+    max_vel_x: 0.5
+    max_vel_theta: 1.0
+    min_vel_x: 0.0
+    min_vel_theta: -1.0
+    
+    # Lookahead parameters
+    lookahead_dist: 0.6
+    use_velocity_scaled_lookahead_dist: true
+    min_lookahead_dist: 0.3
+    max_lookahead_dist: 0.9
+    lookahead_time: 1.5
+    
+    # BEVNet integration
+    bevnet_weight: 0.7
+    use_semantic_info: true
+    prefer_road_areas: true
+    avoid_obstacle_areas: true
