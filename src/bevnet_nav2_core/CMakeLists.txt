@@ -27,6 +27,7 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(bevnet_nav2_msgs REQUIRED)
 find_package(angles REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 # Include directories
 include_directories(

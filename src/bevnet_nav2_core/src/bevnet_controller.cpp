@@ -12,6 +12,7 @@
 #include "nav_msgs/msg/path.hpp"
 #include "pluginlib/class_list_macros.hpp"
 #include "tf2/utils.h"
+#include "angles/angles.h"
 
 namespace bevnet_nav2_core
 {

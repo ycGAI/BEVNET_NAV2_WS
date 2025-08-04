@@ -1,9 +1,11 @@
+// src/bevnet_costmap_layer.cpp
 #include "bevnet_nav2_core/bevnet_costmap_layer.hpp"
 #include "nav2_costmap_2d/costmap_math.hpp"
 #include "nav2_costmap_2d/footprint.hpp"
 #include "rclcpp/parameter_events_filter.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2/convert.h"
+#include "tf2_ros/transform_listener.h"
 
 using nav2_costmap_2d::LETHAL_OBSTACLE;
 using nav2_costmap_2d::INSCRIBED_INFLATED_OBSTACLE;
@@ -142,7 +144,8 @@ void BEVNetCostmapLayer::processSemanticMap(
 
 unsigned char BEVNetCostmapLayer::interpretValue(unsigned char value)
 {
-  if (value == -1) {
+  // -1 在unsigned char中是255
+  if (value == 255) {
     return NO_INFORMATION;
   } else if (value == 0) {
     return FREE_SPACE;
