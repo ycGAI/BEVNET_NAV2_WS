@@ -22,7 +22,7 @@ def generate_launch_description():
     # MCAP播放器
     mcap_player = Node(
         package='mcap_replay',
-        executable='mcap_player.py',
+        executable='mcap_player',
         name='mcap_player',
         parameters=[{
             'mcap_file': LaunchConfiguration('mcap_file'),
