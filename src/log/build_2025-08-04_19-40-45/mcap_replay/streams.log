@@ -1,0 +1,60 @@
+[0.012s] Invoking command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /workspace/bevnet_nav2_ws/src/mcap_replay -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/workspace/bevnet_nav2_ws/src/install/mcap_replay
+[0.070s] -- The C compiler identification is GNU 9.4.0
+[0.120s] -- The CXX compiler identification is GNU 9.4.0
+[0.124s] -- Check for working C compiler: /usr/bin/cc
+[0.199s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.199s] -- Detecting C compiler ABI info
+[0.272s] -- Detecting C compiler ABI info - done
+[0.280s] -- Detecting C compile features
+[0.280s] -- Detecting C compile features - done
+[0.282s] -- Check for working CXX compiler: /usr/bin/c++
+[0.365s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.366s] -- Detecting CXX compiler ABI info
+[0.447s] -- Detecting CXX compiler ABI info - done
+[0.455s] -- Detecting CXX compile features
+[0.456s] -- Detecting CXX compile features - done
+[0.459s] -- Found ament_cmake: 0.9.12 (/opt/ros/foxy/share/ament_cmake/cmake)
+[0.478s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3") 
+[0.478s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[0.605s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.637s] -- Found rclpy: 1.0.13 (/opt/ros/foxy/share/rclpy/cmake)
+[0.663s] -- Found ament_lint_auto: 0.9.8 (/opt/ros/foxy/share/ament_lint_auto/cmake)
+[0.718s] -- Configuring done
+[0.720s] -- Generating done
+[0.721s] -- Build files have been written to: /workspace/bevnet_nav2_ws/src/build/mcap_replay
+[0.725s] Invoked command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /workspace/bevnet_nav2_ws/src/mcap_replay -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/workspace/bevnet_nav2_ws/src/install/mcap_replay
+[0.729s] Invoking command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /workspace/bevnet_nav2_ws/src/build/mcap_replay -- -j16 -l16
+[0.774s] Invoked command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /workspace/bevnet_nav2_ws/src/build/mcap_replay -- -j16 -l16
+[0.789s] Invoking command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /workspace/bevnet_nav2_ws/src/build/mcap_replay
+[0.797s] -- Install configuration: ""
+[0.798s] -- Execute custom install script
+[0.798s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/pythonpath.sh
+[0.808s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/pythonpath.dsv
+[0.820s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/__init__.py
+[0.831s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/data_synchronizer.py
+[0.841s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/kitti_converter.py
+[0.852s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/mcap_player.py
+[0.863s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/mcap_replay/mcap_player.py
+[0.874s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/mcap_replay/kitti_converter.py
+[0.884s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/mcap_replay/data_synchronizer.py
+[0.895s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/ament_index/resource_index/package_run_dependencies/mcap_replay
+[0.905s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/ament_index/resource_index/parent_prefix_path/mcap_replay
+[0.917s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/ament_prefix_path.sh
+[0.927s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/ament_prefix_path.dsv
+[0.938s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/path.sh
+[0.948s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/environment/path.dsv
+[0.959s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/local_setup.bash
+[0.970s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/local_setup.sh
+[0.981s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/local_setup.zsh
+[0.992s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/local_setup.dsv
+[1.004s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/package.dsv
+[1.015s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/ament_index/resource_index/packages/mcap_replay
+[1.026s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/cmake/mcap_replayConfig.cmake
+[1.036s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/cmake/mcap_replayConfig-version.cmake
+[1.047s] -- Symlinking: /workspace/bevnet_nav2_ws/src/install/mcap_replay/share/mcap_replay/package.xml
+[1.087s] Listing '/workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay'...
+[1.087s] Compiling '/workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/__init__.py'...
+[1.087s] Compiling '/workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/data_synchronizer.py'...
+[1.087s] Compiling '/workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/kitti_converter.py'...
+[1.087s] Compiling '/workspace/bevnet_nav2_ws/src/install/mcap_replay/lib/python3.8/site-packages/mcap_replay/mcap_player.py'...
+[1.093s] Invoked command in '/workspace/bevnet_nav2_ws/src/build/mcap_replay' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /workspace/bevnet_nav2_ws/src/build/mcap_replay

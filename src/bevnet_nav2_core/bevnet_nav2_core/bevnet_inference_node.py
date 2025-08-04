@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+import sys
+import os
+sys.path.insert(0, '/workspace/bevnet')
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import PointCloud2, Image
@@ -6,105 +10,76 @@ from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Header
 import numpy as np
 import torch
-import cv2
-from cv_bridge import CvBridge
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-import sys
-import os
-import yaml
 import struct
-from sensor_msgs_py import point_cloud2
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
-# 添加bevnet到Python路径
-sys.path.insert(0, '/workspace/bevnet')
+# BEVNet imports
+from bevnet.inference import BEVNetSingle, BEVNetRecurrent
 
-# 导入BEVNet推理类
+# 尝试导入cv_bridge
 try:
-    from bevnet.inference import BEVNetSingle, BEVNetRecurrent
-except ImportError as e:
-    print(f"Error importing bevnet inference: {e}")
-    print("Make sure bevnet is properly installed and PYTHONPATH is set")
-    raise
+    import cv2
+    from cv_bridge import CvBridge
+    HAS_CV_BRIDGE = True
+except ImportError:
+    print("Warning: cv_bridge not available")
+    HAS_CV_BRIDGE = False
 
 class BEVNetInferenceNode(Node):
     def __init__(self):
         super().__init__('bevnet_inference_node')
         
         # 声明参数
-        self.declare_parameter('model_path', '')
-        self.declare_parameter('model_type', 'single')  # 'single' or 'recurrent'
+        self.declare_parameter('model_path', '/workspace/bevnet_nav2_ws/models/best.pth.34')
+        self.declare_parameter('model_type', 'single')
         self.declare_parameter('device', 'cuda')
-        self.declare_parameter('publish_rate', 10.0)
-        self.declare_parameter('visualize', True)
         self.declare_parameter('pointcloud_topic', '/velodyne_points')
-        self.declare_parameter('use_safety_detection', False)
+        self.declare_parameter('visualize', True)
         
         # 获取参数
         model_path = self.get_parameter('model_path').value
         model_type = self.get_parameter('model_type').value
         device = self.get_parameter('device').value
         pointcloud_topic = self.get_parameter('pointcloud_topic').value
-        use_safety = self.get_parameter('use_safety_detection').value
         
-        # 验证模型路径
-        if not model_path or not os.path.exists(model_path):
-            self.get_logger().error(f'Model path not found: {model_path}')
-            raise FileNotFoundError(f'Model file does not exist: {model_path}')
-        
-        # 加载模型
-        self.get_logger().info(f'Loading BEVNet {model_type} model from: {model_path}')
-        self.get_logger().info(f'Using device: {device}')
+        # 
+        self.get_logger().info(f'Loading BEVNet model from: {model_path}')
+        self.get_logger().info(f'Model type: {model_type}')
+        self.get_logger().info(f'Device: {device}')
         
         try:
-            # 根据模型类型选择推理类
             if model_type == 'single':
                 self.model = BEVNetSingle(model_path, device=device)
-            elif model_type == 'recurrent':
+            else:
                 self.model = BEVNetRecurrent(model_path, device=device)
-            else:
-                raise ValueError(f'Unknown model type: {model_type}')
-            
-            self.device = device
-            self.model_type = model_type
-            
-            # 从模型配置中获取参数
-            if hasattr(self.model, 'g') and self.model.g is not None:
-                voxelizer_cfg = self.model.g.get('voxelizer', {})
-                self.point_cloud_range = voxelizer_cfg.get('point_cloud_range', 
-                                                          [-51.2, -51.2, -2, 51.2, 51.2, 1.0])
-                self.voxel_size = voxelizer_cfg.get('voxel_size', [0.2, 0.2, 0.1])
-                
-                # 计算BEV地图参数
-                self.map_size_x = int((self.point_cloud_range[3] - self.point_cloud_range[0]) / self.voxel_size[0])
-                self.map_size_y = int((self.point_cloud_range[4] - self.point_cloud_range[1]) / self.voxel_size[1])
-                self.map_resolution = self.voxel_size[0]  # 假设x和y分辨率相同
-                
-                # 获取类别数
-                dataset_config = self.model.g.get('dataset_config', {})
-                if isinstance(dataset_config, str) and os.path.exists(dataset_config):
-                    with open(dataset_config, 'r') as f:
-                        dataset_config = yaml.safe_load(f)
-                self.num_classes = dataset_config.get('num_class', 5)
-            else:
-                # 使用默认值
-                self.point_cloud_range = [-51.2, -51.2, -2, 51.2, 51.2, 1.0]
-                self.voxel_size = [0.2, 0.2, 0.1]
-                self.map_size_x = 512
-                self.map_size_y = 512
-                self.map_resolution = 0.2
-                self.num_classes = 5
-            
-            self.get_logger().info(f'Model loaded successfully')
-            self.get_logger().info(f'Point cloud range: {self.point_cloud_range}')
-            self.get_logger().info(f'Voxel size: {self.voxel_size}')
-            self.get_logger().info(f'Map size: {self.map_size_x}x{self.map_size_y}')
-            self.get_logger().info(f'Number of classes: {self.num_classes}')
-            
+            self.get_logger().info('Model loaded successfully!')
         except Exception as e:
             self.get_logger().error(f'Failed to load model: {e}')
-            import traceback
-            traceback.print_exc()
             raise
+        
+        # 设置参数（基于你的模型输出）
+        self.map_size = 407
+        self.map_resolution = 0.2
+        self.num_classes = 5
+        self.point_cloud_range = [-51.2, -51.2, -2, 51.2, 51.2, 1.0]
+        
+        # 语义到代价映射
+        self.semantic_to_cost = {
+            0: 0,     # free space
+            1: 30,    # terrain
+            2: 60,    # vegetation
+            3: 100,   # obstacles
+            4: -1,    # unknown
+        }
+        
+        # 颜色映射
+        self.color_map = np.array([
+            [0, 255, 0],      # 0: free (green)
+            [255, 255, 0],    # 1: terrain (yellow)
+            [0, 0, 255],      # 2: vegetation (blue)
+            [255, 0, 0],      # 3: obstacles (red)
+            [128, 128, 128],  # 4: unknown (gray)
+        ], dtype=np.uint8)
         
         # QoS配置
         qos = QoSProfile(
@@ -113,10 +88,7 @@ class BEVNetInferenceNode(Node):
             depth=1
         )
         
-        # CV Bridge
-        self.bridge = CvBridge()
-        
-        # 订阅和发布
+        # 订阅点云
         self.pc_sub = self.create_subscription(
             PointCloud2,
             pointcloud_topic,
@@ -124,111 +96,124 @@ class BEVNetInferenceNode(Node):
             qos
         )
         
-        # 发布costmap
+        # 发布器
         self.costmap_pub = self.create_publisher(
             OccupancyGrid,
             '/bevnet/costmap',
             10
         )
         
-        # 发布可视化
-        self.viz_pub = self.create_publisher(
-            Image,
-            '/bevnet/visualization',
-            10
-        )
-        
-        # 发布原始语义地图（用于调试）
         self.semantic_pub = self.create_publisher(
             OccupancyGrid,
             '/bevnet/semantic_map',
             10
         )
         
-        # 语义类别到代价的映射
-        # 基于KITTI数据集的5类别系统：0-free, 1-terrain, 2-vegetation, 3-obstacle, 4-unknown
-        self.semantic_to_cost = {
-            0: 0,     # free space
-            1: 30,    # terrain (low cost)
-            2: 60,    # vegetation (medium cost)
-            3: 100,   # obstacles (lethal)
-            4: -1,    # unknown
-        }
+        # 可视化发布器
+        if HAS_CV_BRIDGE and self.get_parameter('visualize').value:
+            self.bridge = CvBridge()
+            self.viz_pub = self.create_publisher(
+                Image,
+                '/bevnet/visualization',
+                10
+            )
+        else:
+            self.viz_pub = None
+            
+        self.get_logger().info(f'BEVNet inference node initialized')
+        self.get_logger().info(f'Subscribing to: {pointcloud_topic}')
         
-        # 可视化的颜色映射 (BGR格式)
-        self.color_map = np.array([
-            [0, 255, 0],      # 0: free (green)
-            [0, 255, 255],    # 1: terrain (yellow)
-            [255, 0, 0],      # 2: vegetation (blue)
-            [0, 0, 255],      # 3: obstacles (red)
-            [128, 128, 128],  # 4: unknown (gray)
-        ], dtype=np.uint8)
-        
-        # 如果是循环模型，存储位姿信息
-        if self.model_type == 'recurrent':
-            self.last_pose = np.eye(4, dtype=np.float32)
-        
-        self.get_logger().info('BEVNet inference node initialized')
+        # 统计信息
+        self.frame_count = 0
+        self.last_time = self.get_clock().now()
     
     def pointcloud_to_numpy(self, msg):
         """将PointCloud2消息转换为numpy数组"""
-        # 使用sensor_msgs_py库解析点云
-        points_list = []
-        for point in point_cloud2.read_points(msg, field_names=("x", "y", "z", "intensity"), skip_nans=True):
-            points_list.append([point[0], point[1], point[2], point[3] if len(point) > 3 else 0.0])
+        # 解析点云
+        points = []
         
-        if len(points_list) == 0:
-            self.get_logger().warn("Received empty point cloud")
+        # 获取字段偏移
+        x_offset = None
+        y_offset = None
+        z_offset = None
+        intensity_offset = None
+        
+        for field in msg.fields:
+            if field.name == 'x':
+                x_offset = field.offset
+            elif field.name == 'y':
+                y_offset = field.offset
+            elif field.name == 'z':
+                z_offset = field.offset
+            elif field.name == 'intensity':
+                intensity_offset = field.offset
+        
+        # 如果没intensity字段，假设在第12个字节
+        if intensity_offset is None:
+            intensity_offset = 12
+        
+        # 解析数据
+        point_step = msg.point_step
+        data = msg.data
+        
+        for i in range(0, len(data), point_step):
+            x = struct.unpack('f', data[i+x_offset:i+x_offset+4])[0]
+            y = struct.unpack('f', data[i+y_offset:i+y_offset+4])[0]
+            z = struct.unpack('f', data[i+z_offset:i+z_offset+4])[0]
+            
+            if i+intensity_offset+4 <= len(data):
+                intensity = struct.unpack('f', data[i+intensity_offset:i+intensity_offset+4])[0]
+            else:
+                intensity = 0.0
+                
+            # 过滤无效点
+            if not (np.isnan(x) or np.isnan(y) or np.isnan(z)):
+                points.append([x, y, z, intensity])
+        
+        if len(points) == 0:
             return None
             
-        points = np.array(points_list, dtype=np.float32)
-        return points
+        return np.array(points, dtype=np.float32)
     
     def pointcloud_callback(self, msg):
         """处理点云数据"""
         try:
             # 转换点云
             points = self.pointcloud_to_numpy(msg)
-            if points is None:
+            if points is None or len(points) < 100:
+                self.get_logger().warn(f"Too few valid points: {len(points) if points is not None else 0}")
                 return
             
             # BEVNet推理
-            if self.model_type == 'single':
-                # 单帧推理
-                bev_preds = self.model.predict(points)
-            else:
-                # 循环推理需要位姿信息
-                # 这里简化处理，使用单位矩阵作为相对位姿
-                # 实际使用时应该从TF或其他来源获取真实位姿
-                pose = np.eye(4, dtype=np.float32)
-                bev_preds = self.model.predict(points, pose)
+            with torch.no_grad():
+                output = self.model.predict(points)
+                
+                # 处理输出
+                if torch.is_tensor(output):
+                    output = output.cpu().numpy()
+                
+                # output shape: [1, 5, 407, 407]
+                if len(output.shape) == 4:
+                    output = output[0]  # [5, 407, 407]
+                
+                semantic_map = np.argmax(output, axis=0)  # [407, 407]
             
-            # 将预测结果转换为numpy数组
-            if isinstance(bev_preds, torch.Tensor):
-                bev_semantic = bev_preds.argmax(dim=0).cpu().numpy()
-                bev_probs = torch.softmax(bev_preds, dim=0).cpu().numpy()
-            else:
-                # 已经是numpy数组
-                bev_semantic = np.argmax(bev_preds, axis=0)
-                bev_probs = bev_preds
+            # 
+            self.publish_semantic_map(semantic_map, msg.header)
+            self.publish_costmap(semantic_map, msg.header)
             
-            # 确保地图大小正确
-            if bev_semantic.shape != (self.map_size_y, self.map_size_x):
-                self.get_logger().warn(f"BEV map size mismatch: expected {(self.map_size_y, self.map_size_x)}, "
-                                     f"got {bev_semantic.shape}. Resizing...")
-                bev_semantic = cv2.resize(bev_semantic.astype(np.uint8), 
-                                        (self.map_size_x, self.map_size_y), 
-                                        interpolation=cv2.INTER_NEAREST)
+            if self.viz_pub is not None:
+                self.publish_visualization(semantic_map, msg.header)
             
-            # 发布语义地图
-            self.publish_semantic_map(bev_semantic, msg.header)
-            
-            # 发布costmap
-            self.publish_costmap(bev_semantic, msg.header)
-            
-            # 可视化
-            if self.get_parameter('visualize').value:
-                self.publish_visualization(bev_semantic, msg.header)
+            # 更新统计
+            self.frame_count += 1
+            current_time = self.get_clock().now()
+            dt = (current_time - self.last_time).nanoseconds / 1e9
+            if dt > 1.0:  # 每秒打印一次
+                fps = self.frame_count / dt
+                self.get_logger().info(f'Processing at {fps:.1f} FPS')
+                self.frame_count = 0
+                self.last_time = current_time
                 
         except Exception as e:
             self.get_logger().error(f'Error in pointcloud callback: {e}')
@@ -236,29 +221,25 @@ class BEVNetInferenceNode(Node):
             traceback.print_exc()
     
     def publish_semantic_map(self, semantic_map, header):
-        """发布原始语义地图"""
+        """发布语义地图"""
         msg = OccupancyGrid()
         msg.header = header
         msg.header.frame_id = 'base_link'
         msg.info.resolution = self.map_resolution
-        msg.info.width = self.map_size_x
-        msg.info.height = self.map_size_y
+        msg.info.width = semantic_map.shape[1]
+        msg.info.height = semantic_map.shape[0]
         msg.info.origin.position.x = self.point_cloud_range[0]
         msg.info.origin.position.y = self.point_cloud_range[1]
         msg.info.origin.orientation.w = 1.0
         
-        # 将语义标签转换为0-100的值以便可视化
+        # 转换为0-100的值
         semantic_vis = (semantic_map.astype(np.float32) / (self.num_classes - 1) * 100).astype(np.int8)
-        
-        # 翻转y轴以匹配ROS坐标系
-        semantic_vis_flipped = np.flipud(semantic_vis)
-        msg.data = semantic_vis_flipped.flatten().tolist()
+        msg.data = np.flipud(semantic_vis).flatten().tolist()
         
         self.semantic_pub.publish(msg)
     
     def publish_costmap(self, semantic_map, header):
-        """发布Nav2兼容的costmap"""
-        # 创建costmap
+        """发布Nav2兼容的代价地图"""
         costmap = np.zeros_like(semantic_map, dtype=np.int8)
         
         for sem_class, cost in self.semantic_to_cost.items():
@@ -266,53 +247,53 @@ class BEVNetInferenceNode(Node):
                 mask = semantic_map == sem_class
                 costmap[mask] = cost
         
-        # 创建OccupancyGrid消息
         msg = OccupancyGrid()
         msg.header = header
         msg.header.frame_id = 'base_link'
         msg.info.resolution = self.map_resolution
-        msg.info.width = self.map_size_x
-        msg.info.height = self.map_size_y
+        msg.info.width = costmap.shape[1]
+        msg.info.height = costmap.shape[0]
         msg.info.origin.position.x = self.point_cloud_range[0]
         msg.info.origin.position.y = self.point_cloud_range[1]
         msg.info.origin.orientation.w = 1.0
         
-        # 翻转y轴以匹配ROS坐标系
-        costmap_flipped = np.flipud(costmap)
-        msg.data = costmap_flipped.flatten().tolist()
-        
+        msg.data = np.flipud(costmap).flatten().tolist()
         self.costmap_pub.publish(msg)
     
     def publish_visualization(self, semantic_map, header):
         """发布可视化图像"""
-        # 创建彩色语义图
+        if not HAS_CV_BRIDGE or self.viz_pub is None:
+            return
+            
+        # 创建彩色图像
         h, w = semantic_map.shape
-        color_map = np.zeros((h, w, 3), dtype=np.uint8)
+        color_image = np.zeros((h, w, 3), dtype=np.uint8)
         
         for class_id in range(self.num_classes):
-            if class_id < len(self.color_map):
-                mask = semantic_map == class_id
-                color_map[mask] = self.color_map[class_id]
+            mask = semantic_map == class_id
+            color_image[mask] = self.color_map[class_id]
         
-        # 翻转图像以匹配ROS坐标系
-        color_map_flipped = np.flipud(color_map)
+        # 翻转以匹配ROS坐标系
+        color_image_flipped = np.flipud(color_image)
         
-        # 转换为ROS图像消息
-        img_msg = self.bridge.cv2_to_imgmsg(color_map_flipped, encoding='bgr8')
+        # 转换为ROS消息
+        img_msg = self.bridge.cv2_to_imgmsg(color_image_flipped, encoding='bgr8')
         img_msg.header = header
-        
         self.viz_pub.publish(img_msg)
 
 def main(args=None):
     rclpy.init(args=args)
-    node = BEVNetInferenceNode()
     
     try:
+        node = BEVNetInferenceNode()
         rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
+    except Exception as e:
+        print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
     finally:
-        node.destroy_node()
+        if 'node' in locals():
+            node.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':

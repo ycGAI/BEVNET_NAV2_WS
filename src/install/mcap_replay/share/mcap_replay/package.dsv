@@ -1,0 +1,11 @@
+source;share/mcap_replay/hook/cmake_prefix_path.ps1
+source;share/mcap_replay/hook/cmake_prefix_path.dsv
+source;share/mcap_replay/hook/cmake_prefix_path.sh
+source;share/mcap_replay/hook/pythonpath.ps1
+source;share/mcap_replay/hook/pythonpath.dsv
+source;share/mcap_replay/hook/pythonpath.sh
+source;share/mcap_replay/local_setup.bash
+source;share/mcap_replay/local_setup.dsv
+source;share/mcap_replay/local_setup.ps1
+source;share/mcap_replay/local_setup.sh
+source;share/mcap_replay/local_setup.zsh

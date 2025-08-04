@@ -19,7 +19,15 @@ install(PROGRAMS
   mcap_replay/mcap_player.py
   mcap_replay/kitti_converter.py
   mcap_replay/data_synchronizer.py
+  mcap_replay/mcap_player
+  mcap_replay/kitti_converter
+  mcap_replay/data_synchronizer
   DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install launch files
+install(DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/launch
 )
 
 if(BUILD_TESTING)
