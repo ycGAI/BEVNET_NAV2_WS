@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     wget
 
-# 添加ROS2 GPG key (使用新的方法)
+# 添加ROS2 GPG key
 RUN wget -qO- https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 
-# 添加ROS2软件源 (Humble for Ubuntu 20.04)
+# 添加ROS2软件源
 RUN echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu focal main" > /etc/apt/sources.list.d/ros2-latest.list
 
 # 安装ROS2 Humble
@@ -34,15 +34,6 @@ RUN pip3 install \
 # 初始化rosdep
 RUN rosdep init || true && rosdep update
 
-# 创建入口脚本
-RUN echo '#!/bin/bash\n\
-source /opt/ros/humble/setup.bash\n\
-export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH\n\
-cd /workspace/bevnet_nav2_ws\n\
-exec "$@"' > /ros_entrypoint.sh && \
-    chmod +x /ros_entrypoint.sh
-
 WORKDIR /workspace/bevnet_nav2_ws
 
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
+# 保持原有的NVIDIA入口点

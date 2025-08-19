@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   bevnet_nav2:
-    # 使用你现有的bevnet容器作为基础镜像
-    image: bevnet_modi:v1
+    image: bevnet_modi:v1  # 使用基础镜像
     container_name: bevnet_nav2_container
     
     # GPU支持
@@ -27,8 +26,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
       - ROS_DOMAIN_ID=1
-      - PYTHONPATH=/workspace/bevnet:${PYTHONPATH}
-      - ROS_DISTRO=humble  # 或者jazzy，取决于你的ROS版本
+      - PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:${PYTHONPATH}
+      - ROS_DISTRO=humble
     
     # 挂载卷
     volumes:
@@ -56,10 +55,10 @@ services:
       - /dev/dri:/dev/dri
     
     # 工作目录
-    working_dir: /opt/ros_ws
+    working_dir: /workspace/bevnet_nav2_ws
     
     stdin_open: true
     tty: true
     
-    # 启动命令
-    command: /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && /bin/bash"
+    # 使用简单的bash命令保持容器运行
+    command: /bin/bash
