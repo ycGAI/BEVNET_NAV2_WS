@@ -1,0 +1,24 @@
+gps_path_publisher:
+  ros__parameters:
+    # GPS文件路径（可被launch文件覆盖）
+    gps_file: "orchard_path.json"
+    
+    # 坐标系配置
+    frame_id: "map"
+    use_utm: true
+    utm_zone: 33  # 根据你的位置设置
+    
+    # 发布配置
+    publish_rate: 1.0
+    publish_markers: true
+    loop_path: false
+    
+    # 路径显示配置
+    path_color: [0.0, 1.0, 0.0, 0.8]
+    point_size: 0.5
+    line_width: 0.2
+    
+    # 路径优化
+    simplify_threshold: 0.5  # 简化路径的距离阈值
+    smooth_path: true
+    smoothing_factor: 0.3
