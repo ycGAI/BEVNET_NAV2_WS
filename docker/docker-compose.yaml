@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   bevnet_nav2:
-    image: bevnet_modi:v1  # 使用基础镜像
+    image: bevnet_humble:final  # 更新为新镜像
     container_name: bevnet_nav2_container
     
     # GPU支持
@@ -27,6 +27,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - ROS_DOMAIN_ID=1
       - PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:${PYTHONPATH}
+      # ROS_DISTRO已经在容器的bashrc中设置，但这里也可以保留
       - ROS_DISTRO=humble
     
     # 挂载卷
@@ -44,8 +45,7 @@ services:
       # BEVNet Nav2工作空间
       - /home/gyc/bevnet_nav2_ws:/workspace/bevnet_nav2_ws:rw
       
-      # 为了方便，直接挂载src目录到ROS工作空间
-      - /home/gyc/bevnet_nav2_ws/src:/opt/ros_ws/src:rw
+      # 其他必要目录
       - /home/gyc/bevnet_nav2_ws/models:/workspace/models:rw
       - /home/gyc/bevnet_nav2_ws/config:/workspace/config:rw
       - /home/gyc/bevnet_nav2_ws/scripts:/workspace/scripts:rw
@@ -60,5 +60,5 @@ services:
     stdin_open: true
     tty: true
     
-    # 使用简单的bash命令保持容器运行
+    # 容器启动时会自动source ROS2 Humble环境
     command: /bin/bash
