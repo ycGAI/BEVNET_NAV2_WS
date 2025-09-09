@@ -1,48 +1,41 @@
+# 基于已有的bevnet_modi:v1容器，该容器已包含Foxy和BEVNet环境
 FROM bevnet_modi:v1
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV ROS_DISTRO=humble
+ENV ROS_DISTRO=foxy
 
-# 更新并安装基础工具
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg2 \
-    lsb-release \
-    software-properties-common \
-    wget
-
-# 添加ROS2 GPG key (使用新的方法)
-RUN wget -qO- https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-
-# 添加ROS2软件源 (Humble for Ubuntu 20.04)
-RUN echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu focal main" > /etc/apt/sources.list.d/ros2-latest.list
-
-# 安装ROS2 Humble
-RUN apt-get update && apt-get install -y \
-    ros-humble-ros-base \
-    ros-humble-navigation2 \
-    ros-humble-nav2-bringup \
-    python3-colcon-common-extensions \
-    python3-rosdep \
-    python3-argcomplete
-
-# 安装Python包
+# 安装必要的Python包（用于MCAP支持）
 RUN pip3 install \
     mcap==1.1.1 \
-    mcap-ros2-support==0.5.3
+    mcap-ros2-support==0.5.3 \
+    transforms3d>=0.4.1 \
+    pyquaternion>=0.9.9
 
-# 初始化rosdep
-RUN rosdep init || true && rosdep update
+# 创建工作目录
+WORKDIR /workspace/bevnet_nav2_ws
 
-# 创建入口脚本
+# 创建简化的入口脚本（只使用Foxy）
 RUN echo '#!/bin/bash\n\
-source /opt/ros/humble/setup.bash\n\
+set -e\n\
+\n\
+# Source ROS Foxy environment\n\
+source /opt/ros/foxy/setup.bash\n\
+\n\
+# 设置Python路径\n\
 export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH\n\
+\n\
+# 如果工作空间已构建，source它\n\
+if [ -f "/workspace/bevnet_nav2_ws/install/setup.bash" ]; then\n\
+    source /workspace/bevnet_nav2_ws/install/setup.bash\n\
+fi\n\
+\n\
+# 进入工作目录\n\
 cd /workspace/bevnet_nav2_ws\n\
+\n\
+# 执行传入的命令\n\
 exec "$@"' > /ros_entrypoint.sh && \
     chmod +x /ros_entrypoint.sh
 
-WORKDIR /workspace/bevnet_nav2_ws
-
+# 设置入口点
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
