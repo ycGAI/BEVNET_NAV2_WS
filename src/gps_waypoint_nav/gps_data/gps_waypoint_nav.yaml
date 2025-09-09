@@ -1,0 +1,644 @@
+# GPS Path for Navigation
+# Total points: 159
+# Creation time: 2025-09-07T08:03:49.553379
+
+gps_path:
+  coordinate_system: "WGS84"
+  total_points: 159
+  points:
+    - index: 0
+      latitude: 52.46744540
+      longitude: 12.95871810
+      altitude: 84.93
+    - index: 1
+      latitude: 52.46744620
+      longitude: 12.95872550
+      altitude: 84.94
+    - index: 2
+      latitude: 52.46744710
+      longitude: 12.95873320
+      altitude: 84.93
+    - index: 3
+      latitude: 52.46744780
+      longitude: 12.95874110
+      altitude: 84.96
+    - index: 4
+      latitude: 52.46744850
+      longitude: 12.95874890
+      altitude: 84.95
+    - index: 5
+      latitude: 52.46744950
+      longitude: 12.95875690
+      altitude: 84.97
+    - index: 6
+      latitude: 52.46745040
+      longitude: 12.95876470
+      altitude: 84.94
+    - index: 7
+      latitude: 52.46745110
+      longitude: 12.95877260
+      altitude: 84.96
+    - index: 8
+      latitude: 52.46745200
+      longitude: 12.95878020
+      altitude: 84.98
+    - index: 9
+      latitude: 52.46745260
+      longitude: 12.95878760
+      altitude: 84.98
+    - index: 10
+      latitude: 52.46745340
+      longitude: 12.95879500
+      altitude: 84.98
+    - index: 11
+      latitude: 52.46745430
+      longitude: 12.95880260
+      altitude: 85.00
+    - index: 12
+      latitude: 52.46745500
+      longitude: 12.95881050
+      altitude: 85.02
+    - index: 13
+      latitude: 52.46745590
+      longitude: 12.95881830
+      altitude: 85.02
+    - index: 14
+      latitude: 52.46745680
+      longitude: 12.95882560
+      altitude: 85.03
+    - index: 15
+      latitude: 52.46745750
+      longitude: 12.95883300
+      altitude: 85.05
+    - index: 16
+      latitude: 52.46745820
+      longitude: 12.95884040
+      altitude: 85.07
+    - index: 17
+      latitude: 52.46745900
+      longitude: 12.95884800
+      altitude: 85.07
+    - index: 18
+      latitude: 52.46745970
+      longitude: 12.95885540
+      altitude: 85.08
+    - index: 19
+      latitude: 52.46746070
+      longitude: 12.95886310
+      altitude: 85.10
+    - index: 20
+      latitude: 52.46746160
+      longitude: 12.95887050
+      altitude: 85.11
+    - index: 21
+      latitude: 52.46746230
+      longitude: 12.95887790
+      altitude: 85.12
+    - index: 22
+      latitude: 52.46746280
+      longitude: 12.95888570
+      altitude: 85.15
+    - index: 23
+      latitude: 52.46746360
+      longitude: 12.95889300
+      altitude: 85.14
+    - index: 24
+      latitude: 52.46746460
+      longitude: 12.95890030
+      altitude: 85.17
+    - index: 25
+      latitude: 52.46746560
+      longitude: 12.95890790
+      altitude: 85.16
+    - index: 26
+      latitude: 52.46746630
+      longitude: 12.95891590
+      altitude: 85.18
+    - index: 27
+      latitude: 52.46746690
+      longitude: 12.95892340
+      altitude: 85.20
+    - index: 28
+      latitude: 52.46746760
+      longitude: 12.95893090
+      altitude: 85.21
+    - index: 29
+      latitude: 52.46746850
+      longitude: 12.95893870
+      altitude: 85.21
+    - index: 30
+      latitude: 52.46746960
+      longitude: 12.95894660
+      altitude: 85.21
+    - index: 31
+      latitude: 52.46747030
+      longitude: 12.95895400
+      altitude: 85.23
+    - index: 32
+      latitude: 52.46747090
+      longitude: 12.95896160
+      altitude: 85.24
+    - index: 33
+      latitude: 52.46747170
+      longitude: 12.95896900
+      altitude: 85.26
+    - index: 34
+      latitude: 52.46747260
+      longitude: 12.95897650
+      altitude: 85.25
+    - index: 35
+      latitude: 52.46747340
+      longitude: 12.95898380
+      altitude: 85.28
+    - index: 36
+      latitude: 52.46747440
+      longitude: 12.95899150
+      altitude: 85.30
+    - index: 37
+      latitude: 52.46747480
+      longitude: 12.95900040
+      altitude: 85.35
+    - index: 38
+      latitude: 52.46747480
+      longitude: 12.95901450
+      altitude: 85.40
+    - index: 39
+      latitude: 52.46747060
+      longitude: 12.95901720
+      altitude: 85.34
+    - index: 40
+      latitude: 52.46746620
+      longitude: 12.95901450
+      altitude: 85.31
+    - index: 41
+      latitude: 52.46746270
+      longitude: 12.95900980
+      altitude: 85.18
+    - index: 42
+      latitude: 52.46745600
+      longitude: 12.95901060
+      altitude: 85.26
+    - index: 43
+      latitude: 52.46745180
+      longitude: 12.95900740
+      altitude: 85.27
+    - index: 44
+      latitude: 52.46745050
+      longitude: 12.95899980
+      altitude: 85.28
+    - index: 45
+      latitude: 52.46744940
+      longitude: 12.95899220
+      altitude: 85.23
+    - index: 46
+      latitude: 52.46744880
+      longitude: 12.95898410
+      altitude: 85.20
+    - index: 47
+      latitude: 52.46744900
+      longitude: 12.95897640
+      altitude: 85.21
+    - index: 48
+      latitude: 52.46744840
+      longitude: 12.95896850
+      altitude: 85.20
+    - index: 49
+      latitude: 52.46744720
+      longitude: 12.95896090
+      altitude: 85.22
+    - index: 50
+      latitude: 52.46744610
+      longitude: 12.95895350
+      altitude: 85.19
+    - index: 51
+      latitude: 52.46744540
+      longitude: 12.95894610
+      altitude: 85.18
+    - index: 52
+      latitude: 52.46744470
+      longitude: 12.95893870
+      altitude: 85.17
+    - index: 53
+      latitude: 52.46744420
+      longitude: 12.95893110
+      altitude: 85.18
+    - index: 54
+      latitude: 52.46744360
+      longitude: 12.95892360
+      altitude: 85.17
+    - index: 55
+      latitude: 52.46744280
+      longitude: 12.95891600
+      altitude: 85.16
+    - index: 56
+      latitude: 52.46744160
+      longitude: 12.95890860
+      altitude: 85.16
+    - index: 57
+      latitude: 52.46744080
+      longitude: 12.95890090
+      altitude: 85.14
+    - index: 58
+      latitude: 52.46744020
+      longitude: 12.95889290
+      altitude: 85.11
+    - index: 59
+      latitude: 52.46743970
+      longitude: 12.95888530
+      altitude: 85.10
+    - index: 60
+      latitude: 52.46743890
+      longitude: 12.95887750
+      altitude: 85.09
+    - index: 61
+      latitude: 52.46743800
+      longitude: 12.95886990
+      altitude: 85.08
+    - index: 62
+      latitude: 52.46743690
+      longitude: 12.95886190
+      altitude: 85.07
+    - index: 63
+      latitude: 52.46743620
+      longitude: 12.95885450
+      altitude: 85.05
+    - index: 64
+      latitude: 52.46743560
+      longitude: 12.95884610
+      altitude: 85.02
+    - index: 65
+      latitude: 52.46743480
+      longitude: 12.95883790
+      altitude: 85.01
+    - index: 66
+      latitude: 52.46743380
+      longitude: 12.95883050
+      altitude: 85.01
+    - index: 67
+      latitude: 52.46743300
+      longitude: 12.95882310
+      altitude: 85.01
+    - index: 68
+      latitude: 52.46743240
+      longitude: 12.95881560
+      altitude: 84.98
+    - index: 69
+      latitude: 52.46743190
+      longitude: 12.95880810
+      altitude: 84.98
+    - index: 70
+      latitude: 52.46743110
+      longitude: 12.95880050
+      altitude: 84.97
+    - index: 71
+      latitude: 52.46743010
+      longitude: 12.95879300
+      altitude: 84.95
+    - index: 72
+      latitude: 52.46742930
+      longitude: 12.95878560
+      altitude: 84.95
+    - index: 73
+      latitude: 52.46742870
+      longitude: 12.95877820
+      altitude: 84.94
+    - index: 74
+      latitude: 52.46742800
+      longitude: 12.95877060
+      altitude: 84.93
+    - index: 75
+      latitude: 52.46742720
+      longitude: 12.95876310
+      altitude: 84.93
+    - index: 76
+      latitude: 52.46742640
+      longitude: 12.95875540
+      altitude: 84.89
+    - index: 77
+      latitude: 52.46742550
+      longitude: 12.95874810
+      altitude: 84.89
+    - index: 78
+      latitude: 52.46742490
+      longitude: 12.95874060
+      altitude: 84.87
+    - index: 79
+      latitude: 52.46742420
+      longitude: 12.95873310
+      altitude: 84.87
+    - index: 80
+      latitude: 52.46742330
+      longitude: 12.95872570
+      altitude: 84.86
+    - index: 81
+      latitude: 52.46742250
+      longitude: 12.95871810
+      altitude: 84.85
+    - index: 82
+      latitude: 52.46742190
+      longitude: 12.95871020
+      altitude: 84.79
+    - index: 83
+      latitude: 52.46742120
+      longitude: 12.95870210
+      altitude: 84.78
+    - index: 84
+      latitude: 52.46742020
+      longitude: 12.95869470
+      altitude: 84.78
+    - index: 85
+      latitude: 52.46741930
+      longitude: 12.95868710
+      altitude: 84.76
+    - index: 86
+      latitude: 52.46741880
+      longitude: 12.95867950
+      altitude: 84.73
+    - index: 87
+      latitude: 52.46741800
+      longitude: 12.95867200
+      altitude: 84.70
+    - index: 88
+      latitude: 52.46741730
+      longitude: 12.95866460
+      altitude: 84.68
+    - index: 89
+      latitude: 52.46741650
+      longitude: 12.95865710
+      altitude: 84.66
+    - index: 90
+      latitude: 52.46741560
+      longitude: 12.95864960
+      altitude: 84.63
+    - index: 91
+      latitude: 52.46741490
+      longitude: 12.95864200
+      altitude: 84.62
+    - index: 92
+      latitude: 52.46741420
+      longitude: 12.95863450
+      altitude: 84.60
+    - index: 93
+      latitude: 52.46741350
+      longitude: 12.95862710
+      altitude: 84.57
+    - index: 94
+      latitude: 52.46741280
+      longitude: 12.95861960
+      altitude: 84.56
+    - index: 95
+      latitude: 52.46741190
+      longitude: 12.95861220
+      altitude: 84.55
+    - index: 96
+      latitude: 52.46741110
+      longitude: 12.95860450
+      altitude: 84.52
+    - index: 97
+      latitude: 52.46741030
+      longitude: 12.95859720
+      altitude: 84.50
+    - index: 98
+      latitude: 52.46740970
+      longitude: 12.95858980
+      altitude: 84.49
+    - index: 99
+      latitude: 52.46740900
+      longitude: 12.95858210
+      altitude: 84.47
+    - index: 100
+      latitude: 52.46740820
+      longitude: 12.95857450
+      altitude: 84.44
+    - index: 101
+      latitude: 52.46740740
+      longitude: 12.95856700
+      altitude: 84.44
+    - index: 102
+      latitude: 52.46740650
+      longitude: 12.95855950
+      altitude: 84.41
+    - index: 103
+      latitude: 52.46740580
+      longitude: 12.95855200
+      altitude: 84.39
+    - index: 104
+      latitude: 52.46740520
+      longitude: 12.95854440
+      altitude: 84.36
+    - index: 105
+      latitude: 52.46740440
+      longitude: 12.95853700
+      altitude: 84.35
+    - index: 106
+      latitude: 52.46740370
+      longitude: 12.95852960
+      altitude: 84.34
+    - index: 107
+      latitude: 52.46740280
+      longitude: 12.95852190
+      altitude: 84.31
+    - index: 108
+      latitude: 52.46740210
+      longitude: 12.95851450
+      altitude: 84.29
+    - index: 109
+      latitude: 52.46740130
+      longitude: 12.95850660
+      altitude: 84.29
+    - index: 110
+      latitude: 52.46740050
+      longitude: 12.95849930
+      altitude: 84.26
+    - index: 111
+      latitude: 52.46739990
+      longitude: 12.95849190
+      altitude: 84.25
+    - index: 112
+      latitude: 52.46739920
+      longitude: 12.95848450
+      altitude: 84.23
+    - index: 113
+      latitude: 52.46739830
+      longitude: 12.95847700
+      altitude: 84.20
+    - index: 114
+      latitude: 52.46739750
+      longitude: 12.95846950
+      altitude: 84.18
+    - index: 115
+      latitude: 52.46739680
+      longitude: 12.95846180
+      altitude: 84.14
+    - index: 116
+      latitude: 52.46739600
+      longitude: 12.95845440
+      altitude: 84.16
+    - index: 117
+      latitude: 52.46739520
+      longitude: 12.95844690
+      altitude: 84.13
+    - index: 118
+      latitude: 52.46739450
+      longitude: 12.95843940
+      altitude: 84.13
+    - index: 119
+      latitude: 52.46739380
+      longitude: 12.95843190
+      altitude: 84.10
+    - index: 120
+      latitude: 52.46739300
+      longitude: 12.95842440
+      altitude: 84.06
+    - index: 121
+      latitude: 52.46739220
+      longitude: 12.95841690
+      altitude: 84.05
+    - index: 122
+      latitude: 52.46739150
+      longitude: 12.95840930
+      altitude: 84.03
+    - index: 123
+      latitude: 52.46739080
+      longitude: 12.95840170
+      altitude: 84.02
+    - index: 124
+      latitude: 52.46739000
+      longitude: 12.95839440
+      altitude: 84.00
+    - index: 125
+      latitude: 52.46738920
+      longitude: 12.95838700
+      altitude: 83.99
+    - index: 126
+      latitude: 52.46738850
+      longitude: 12.95837920
+      altitude: 83.95
+    - index: 127
+      latitude: 52.46738770
+      longitude: 12.95837180
+      altitude: 83.92
+    - index: 128
+      latitude: 52.46738690
+      longitude: 12.95836440
+      altitude: 83.92
+    - index: 129
+      latitude: 52.46738610
+      longitude: 12.95835680
+      altitude: 83.88
+    - index: 130
+      latitude: 52.46738550
+      longitude: 12.95834870
+      altitude: 83.86
+    - index: 131
+      latitude: 52.46738490
+      longitude: 12.95834080
+      altitude: 83.83
+    - index: 132
+      latitude: 52.46738400
+      longitude: 12.95833350
+      altitude: 83.83
+    - index: 133
+      latitude: 52.46738290
+      longitude: 12.95832610
+      altitude: 83.82
+    - index: 134
+      latitude: 52.46738210
+      longitude: 12.95831850
+      altitude: 83.78
+    - index: 135
+      latitude: 52.46738150
+      longitude: 12.95831060
+      altitude: 83.78
+    - index: 136
+      latitude: 52.46738090
+      longitude: 12.95830300
+      altitude: 83.77
+    - index: 137
+      latitude: 52.46738010
+      longitude: 12.95829490
+      altitude: 83.72
+    - index: 138
+      latitude: 52.46737920
+      longitude: 12.95828720
+      altitude: 83.72
+    - index: 139
+      latitude: 52.46737830
+      longitude: 12.95827950
+      altitude: 83.69
+    - index: 140
+      latitude: 52.46737760
+      longitude: 12.95827210
+      altitude: 83.67
+    - index: 141
+      latitude: 52.46737680
+      longitude: 12.95826480
+      altitude: 83.68
+    - index: 142
+      latitude: 52.46737610
+      longitude: 12.95825720
+      altitude: 83.66
+    - index: 143
+      latitude: 52.46737560
+      longitude: 12.95824960
+      altitude: 83.63
+    - index: 144
+      latitude: 52.46737480
+      longitude: 12.95824220
+      altitude: 83.62
+    - index: 145
+      latitude: 52.46737390
+      longitude: 12.95823470
+      altitude: 83.61
+    - index: 146
+      latitude: 52.46737310
+      longitude: 12.95822690
+      altitude: 83.58
+    - index: 147
+      latitude: 52.46737210
+      longitude: 12.95821890
+      altitude: 83.56
+    - index: 148
+      latitude: 52.46737130
+      longitude: 12.95821080
+      altitude: 83.56
+    - index: 149
+      latitude: 52.46737070
+      longitude: 12.95820300
+      altitude: 83.53
+    - index: 150
+      latitude: 52.46737020
+      longitude: 12.95819560
+      altitude: 83.52
+    - index: 151
+      latitude: 52.46736920
+      longitude: 12.95818800
+      altitude: 83.50
+    - index: 152
+      latitude: 52.46736820
+      longitude: 12.95818050
+      altitude: 83.46
+    - index: 153
+      latitude: 52.46736760
+      longitude: 12.95817310
+      altitude: 83.45
+    - index: 154
+      latitude: 52.46736700
+      longitude: 12.95816560
+      altitude: 83.43
+    - index: 155
+      latitude: 52.46736650
+      longitude: 12.95815820
+      altitude: 83.44
+    - index: 156
+      latitude: 52.46736540
+      longitude: 12.95815050
+      altitude: 83.40
+    - index: 157
+      latitude: 52.46736440
+      longitude: 12.95814280
+      altitude: 83.37
+    - index: 158
+      latitude: 52.46736400
+      longitude: 12.95813910
+      altitude: 83.31

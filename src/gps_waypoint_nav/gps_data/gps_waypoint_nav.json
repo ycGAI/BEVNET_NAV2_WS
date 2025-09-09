@@ -1,0 +1,1282 @@
+{
+  "metadata": {
+    "total_points": 159,
+    "downsample_distance": 0.5,
+    "creation_time": "2025-09-07T08:03:49.551250",
+    "coordinate_system": "WGS84"
+  },
+  "path": [
+    {
+      "timestamp": 1729151669068667569,
+      "timestamp_sec": 1729151669.0686677,
+      "latitude": 52.467445399999995,
+      "longitude": 12.958718099999999,
+      "altitude": 84.926,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151670034765794,
+      "timestamp_sec": 1729151670.0347657,
+      "latitude": 52.4674462,
+      "longitude": 12.9587255,
+      "altitude": 84.94200000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151671281501971,
+      "timestamp_sec": 1729151671.281502,
+      "latitude": 52.4674471,
+      "longitude": 12.9587332,
+      "altitude": 84.934,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151672652636472,
+      "timestamp_sec": 1729151672.6526365,
+      "latitude": 52.467447799999995,
+      "longitude": 12.9587411,
+      "altitude": 84.96000000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151673908663132,
+      "timestamp_sec": 1729151673.908663,
+      "latitude": 52.467448499999996,
+      "longitude": 12.9587489,
+      "altitude": 84.94800000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151675278371969,
+      "timestamp_sec": 1729151675.278372,
+      "latitude": 52.4674495,
+      "longitude": 12.9587569,
+      "altitude": 84.965,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151676531429179,
+      "timestamp_sec": 1729151676.531429,
+      "latitude": 52.4674504,
+      "longitude": 12.9587647,
+      "altitude": 84.944,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151677898399553,
+      "timestamp_sec": 1729151677.8983996,
+      "latitude": 52.4674511,
+      "longitude": 12.9587726,
+      "altitude": 84.96000000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151679154598816,
+      "timestamp_sec": 1729151679.154599,
+      "latitude": 52.467451999999994,
+      "longitude": 12.9587802,
+      "altitude": 84.977,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151680403661741,
+      "timestamp_sec": 1729151680.4036617,
+      "latitude": 52.467452599999994,
+      "longitude": 12.958787599999999,
+      "altitude": 84.97500000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151681654506212,
+      "timestamp_sec": 1729151681.6545062,
+      "latitude": 52.4674534,
+      "longitude": 12.958795,
+      "altitude": 84.979,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151682908052479,
+      "timestamp_sec": 1729151682.9080524,
+      "latitude": 52.4674543,
+      "longitude": 12.9588026,
+      "altitude": 84.997,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151684281960859,
+      "timestamp_sec": 1729151684.281961,
+      "latitude": 52.467455,
+      "longitude": 12.9588105,
+      "altitude": 85.022,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151685528445060,
+      "timestamp_sec": 1729151685.5284452,
+      "latitude": 52.4674559,
+      "longitude": 12.958818299999999,
+      "altitude": 85.021,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151686776734295,
+      "timestamp_sec": 1729151686.776734,
+      "latitude": 52.4674568,
+      "longitude": 12.958825599999999,
+      "altitude": 85.028,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151688037665543,
+      "timestamp_sec": 1729151688.0376656,
+      "latitude": 52.467457499999995,
+      "longitude": 12.958833,
+      "altitude": 85.054,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151689280095303,
+      "timestamp_sec": 1729151689.2800953,
+      "latitude": 52.467458199999996,
+      "longitude": 12.9588404,
+      "altitude": 85.074,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151690524284057,
+      "timestamp_sec": 1729151690.5242841,
+      "latitude": 52.467459,
+      "longitude": 12.958848,
+      "altitude": 85.06700000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151691777061322,
+      "timestamp_sec": 1729151691.7770615,
+      "latitude": 52.4674597,
+      "longitude": 12.9588554,
+      "altitude": 85.084,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151693033994431,
+      "timestamp_sec": 1729151693.0339944,
+      "latitude": 52.4674607,
+      "longitude": 12.9588631,
+      "altitude": 85.10000000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151694280296238,
+      "timestamp_sec": 1729151694.280296,
+      "latitude": 52.4674616,
+      "longitude": 12.9588705,
+      "altitude": 85.114,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151695529684368,
+      "timestamp_sec": 1729151695.5296845,
+      "latitude": 52.4674623,
+      "longitude": 12.9588779,
+      "altitude": 85.122,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151696909713887,
+      "timestamp_sec": 1729151696.909714,
+      "latitude": 52.4674628,
+      "longitude": 12.9588857,
+      "altitude": 85.149,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151698031165655,
+      "timestamp_sec": 1729151698.0311656,
+      "latitude": 52.467463599999995,
+      "longitude": 12.958893,
+      "altitude": 85.141,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151699277788605,
+      "timestamp_sec": 1729151699.2777886,
+      "latitude": 52.4674646,
+      "longitude": 12.9589003,
+      "altitude": 85.169,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151700529744783,
+      "timestamp_sec": 1729151700.5297449,
+      "latitude": 52.4674656,
+      "longitude": 12.9589079,
+      "altitude": 85.16,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151701902370780,
+      "timestamp_sec": 1729151701.902371,
+      "latitude": 52.4674663,
+      "longitude": 12.9589159,
+      "altitude": 85.178,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151703154524092,
+      "timestamp_sec": 1729151703.154524,
+      "latitude": 52.4674669,
+      "longitude": 12.9589234,
+      "altitude": 85.20100000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151704404653101,
+      "timestamp_sec": 1729151704.404653,
+      "latitude": 52.4674676,
+      "longitude": 12.958930899999999,
+      "altitude": 85.211,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151705654918619,
+      "timestamp_sec": 1729151705.6549187,
+      "latitude": 52.467468499999995,
+      "longitude": 12.9589387,
+      "altitude": 85.21000000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151707030484274,
+      "timestamp_sec": 1729151707.0304842,
+      "latitude": 52.4674696,
+      "longitude": 12.958946599999999,
+      "altitude": 85.21000000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151708277003475,
+      "timestamp_sec": 1729151708.2770035,
+      "latitude": 52.467470299999995,
+      "longitude": 12.958953999999999,
+      "altitude": 85.233,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151709528034506,
+      "timestamp_sec": 1729151709.5280344,
+      "latitude": 52.467470899999995,
+      "longitude": 12.958961599999999,
+      "altitude": 85.242,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151710776964776,
+      "timestamp_sec": 1729151710.776965,
+      "latitude": 52.4674717,
+      "longitude": 12.958969,
+      "altitude": 85.259,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151712033035290,
+      "timestamp_sec": 1729151712.0330353,
+      "latitude": 52.4674726,
+      "longitude": 12.958976499999999,
+      "altitude": 85.253,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151713279804488,
+      "timestamp_sec": 1729151713.2798045,
+      "latitude": 52.467473399999996,
+      "longitude": 12.958983799999999,
+      "altitude": 85.276,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151714649698844,
+      "timestamp_sec": 1729151714.6496987,
+      "latitude": 52.4674744,
+      "longitude": 12.9589915,
+      "altitude": 85.302,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151716928111047,
+      "timestamp_sec": 1729151716.928111,
+      "latitude": 52.4674748,
+      "longitude": 12.959000399999999,
+      "altitude": 85.34700000000001,
+      "status": 0
+    },
+    {
+      "timestamp": 1729151718039510101,
+      "timestamp_sec": 1729151718.03951,
+      "latitude": 52.4674748,
+      "longitude": 12.959014499999999,
+      "altitude": 85.403,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151720527449644,
+      "timestamp_sec": 1729151720.5274496,
+      "latitude": 52.4674706,
+      "longitude": 12.9590172,
+      "altitude": 85.34100000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151722282971455,
+      "timestamp_sec": 1729151722.2829714,
+      "latitude": 52.4674662,
+      "longitude": 12.959014499999999,
+      "altitude": 85.312,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151723903235308,
+      "timestamp_sec": 1729151723.9032354,
+      "latitude": 52.4674627,
+      "longitude": 12.959009799999999,
+      "altitude": 85.179,
+      "status": 0
+    },
+    {
+      "timestamp": 1729151725151535741,
+      "timestamp_sec": 1729151725.1515355,
+      "latitude": 52.467456,
+      "longitude": 12.9590106,
+      "altitude": 85.264,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151726907656920,
+      "timestamp_sec": 1729151726.907657,
+      "latitude": 52.4674518,
+      "longitude": 12.959007399999999,
+      "altitude": 85.271,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151728776937991,
+      "timestamp_sec": 1729151728.776938,
+      "latitude": 52.4674505,
+      "longitude": 12.958999799999999,
+      "altitude": 85.276,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151730032411167,
+      "timestamp_sec": 1729151730.032411,
+      "latitude": 52.4674494,
+      "longitude": 12.958992199999999,
+      "altitude": 85.232,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151731407491619,
+      "timestamp_sec": 1729151731.4074917,
+      "latitude": 52.4674488,
+      "longitude": 12.958984099999999,
+      "altitude": 85.196,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151732770231409,
+      "timestamp_sec": 1729151732.7702312,
+      "latitude": 52.467448999999995,
+      "longitude": 12.9589764,
+      "altitude": 85.214,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151734033853100,
+      "timestamp_sec": 1729151734.0338533,
+      "latitude": 52.467448399999995,
+      "longitude": 12.9589685,
+      "altitude": 85.196,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151735276584732,
+      "timestamp_sec": 1729151735.2765846,
+      "latitude": 52.467447199999995,
+      "longitude": 12.9589609,
+      "altitude": 85.21600000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151736524794177,
+      "timestamp_sec": 1729151736.524794,
+      "latitude": 52.4674461,
+      "longitude": 12.9589535,
+      "altitude": 85.186,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151737774502721,
+      "timestamp_sec": 1729151737.7745028,
+      "latitude": 52.467445399999995,
+      "longitude": 12.958946099999999,
+      "altitude": 85.181,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151739028098727,
+      "timestamp_sec": 1729151739.0280988,
+      "latitude": 52.467444699999994,
+      "longitude": 12.9589387,
+      "altitude": 85.175,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151740276500669,
+      "timestamp_sec": 1729151740.2765007,
+      "latitude": 52.467444199999996,
+      "longitude": 12.9589311,
+      "altitude": 85.183,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151741523434189,
+      "timestamp_sec": 1729151741.5234342,
+      "latitude": 52.467443599999996,
+      "longitude": 12.958923599999999,
+      "altitude": 85.175,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151742778451067,
+      "timestamp_sec": 1729151742.778451,
+      "latitude": 52.4674428,
+      "longitude": 12.958915999999999,
+      "altitude": 85.157,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151744031459839,
+      "timestamp_sec": 1729151744.0314598,
+      "latitude": 52.4674416,
+      "longitude": 12.958908599999999,
+      "altitude": 85.161,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151745277486284,
+      "timestamp_sec": 1729151745.2774863,
+      "latitude": 52.4674408,
+      "longitude": 12.9589009,
+      "altitude": 85.135,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151746651981533,
+      "timestamp_sec": 1729151746.6519816,
+      "latitude": 52.4674402,
+      "longitude": 12.958892899999999,
+      "altitude": 85.114,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151747902902670,
+      "timestamp_sec": 1729151747.9029028,
+      "latitude": 52.4674397,
+      "longitude": 12.958885299999999,
+      "altitude": 85.10300000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151749150956230,
+      "timestamp_sec": 1729151749.1509564,
+      "latitude": 52.4674389,
+      "longitude": 12.9588775,
+      "altitude": 85.09,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151750401474714,
+      "timestamp_sec": 1729151750.4014747,
+      "latitude": 52.467437999999994,
+      "longitude": 12.9588699,
+      "altitude": 85.078,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151751777315107,
+      "timestamp_sec": 1729151751.7773151,
+      "latitude": 52.467436899999996,
+      "longitude": 12.958861899999999,
+      "altitude": 85.068,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151753028771603,
+      "timestamp_sec": 1729151753.0287716,
+      "latitude": 52.467436199999995,
+      "longitude": 12.9588545,
+      "altitude": 85.049,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151754393632623,
+      "timestamp_sec": 1729151754.3936324,
+      "latitude": 52.467435599999995,
+      "longitude": 12.958846099999999,
+      "altitude": 85.019,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151755771563672,
+      "timestamp_sec": 1729151755.7715638,
+      "latitude": 52.4674348,
+      "longitude": 12.958837899999999,
+      "altitude": 85.008,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151757027645019,
+      "timestamp_sec": 1729151757.0276449,
+      "latitude": 52.467433799999995,
+      "longitude": 12.9588305,
+      "altitude": 85.012,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151758274575413,
+      "timestamp_sec": 1729151758.2745755,
+      "latitude": 52.467433,
+      "longitude": 12.9588231,
+      "altitude": 85.008,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151759519188069,
+      "timestamp_sec": 1729151759.519188,
+      "latitude": 52.4674324,
+      "longitude": 12.9588156,
+      "altitude": 84.985,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151760771414974,
+      "timestamp_sec": 1729151760.771415,
+      "latitude": 52.4674319,
+      "longitude": 12.958808099999999,
+      "altitude": 84.976,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151762028815006,
+      "timestamp_sec": 1729151762.028815,
+      "latitude": 52.4674311,
+      "longitude": 12.958800499999999,
+      "altitude": 84.967,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151763274474996,
+      "timestamp_sec": 1729151763.274475,
+      "latitude": 52.467430099999994,
+      "longitude": 12.958793,
+      "altitude": 84.952,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151764523867658,
+      "timestamp_sec": 1729151764.5238676,
+      "latitude": 52.4674293,
+      "longitude": 12.958785599999999,
+      "altitude": 84.949,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151765772786314,
+      "timestamp_sec": 1729151765.7727864,
+      "latitude": 52.4674287,
+      "longitude": 12.9587782,
+      "altitude": 84.943,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151767024394996,
+      "timestamp_sec": 1729151767.024395,
+      "latitude": 52.467428,
+      "longitude": 12.9587706,
+      "altitude": 84.931,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151768275331549,
+      "timestamp_sec": 1729151768.2753315,
+      "latitude": 52.467427199999996,
+      "longitude": 12.958763099999999,
+      "altitude": 84.926,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151769523155372,
+      "timestamp_sec": 1729151769.5231555,
+      "latitude": 52.4674264,
+      "longitude": 12.9587554,
+      "altitude": 84.887,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151770771669396,
+      "timestamp_sec": 1729151770.7716694,
+      "latitude": 52.4674255,
+      "longitude": 12.9587481,
+      "altitude": 84.895,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151772031564040,
+      "timestamp_sec": 1729151772.031564,
+      "latitude": 52.4674249,
+      "longitude": 12.958740599999999,
+      "altitude": 84.873,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151773269960714,
+      "timestamp_sec": 1729151773.2699606,
+      "latitude": 52.467424199999996,
+      "longitude": 12.9587331,
+      "altitude": 84.871,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151774524772074,
+      "timestamp_sec": 1729151774.5247722,
+      "latitude": 52.4674233,
+      "longitude": 12.958725699999999,
+      "altitude": 84.865,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151775775591909,
+      "timestamp_sec": 1729151775.7755919,
+      "latitude": 52.4674225,
+      "longitude": 12.958718099999999,
+      "altitude": 84.84700000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151777030447851,
+      "timestamp_sec": 1729151777.030448,
+      "latitude": 52.4674219,
+      "longitude": 12.958710199999999,
+      "altitude": 84.792,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151778405689031,
+      "timestamp_sec": 1729151778.405689,
+      "latitude": 52.4674212,
+      "longitude": 12.9587021,
+      "altitude": 84.781,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151779650773974,
+      "timestamp_sec": 1729151779.650774,
+      "latitude": 52.4674202,
+      "longitude": 12.958694699999999,
+      "altitude": 84.783,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151780902247397,
+      "timestamp_sec": 1729151780.9022474,
+      "latitude": 52.467419299999996,
+      "longitude": 12.958687099999999,
+      "altitude": 84.76,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151782152816402,
+      "timestamp_sec": 1729151782.1528163,
+      "latitude": 52.4674188,
+      "longitude": 12.958679499999999,
+      "altitude": 84.726,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151783401262198,
+      "timestamp_sec": 1729151783.401262,
+      "latitude": 52.467417999999995,
+      "longitude": 12.958672,
+      "altitude": 84.70400000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151784648962115,
+      "timestamp_sec": 1729151784.648962,
+      "latitude": 52.4674173,
+      "longitude": 12.958664599999999,
+      "altitude": 84.684,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151785892130775,
+      "timestamp_sec": 1729151785.8921309,
+      "latitude": 52.4674165,
+      "longitude": 12.9586571,
+      "altitude": 84.664,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151787149971845,
+      "timestamp_sec": 1729151787.149972,
+      "latitude": 52.467415599999995,
+      "longitude": 12.9586496,
+      "altitude": 84.633,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151788403734256,
+      "timestamp_sec": 1729151788.4037342,
+      "latitude": 52.467414899999994,
+      "longitude": 12.958642,
+      "altitude": 84.618,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151789649130029,
+      "timestamp_sec": 1729151789.6491299,
+      "latitude": 52.4674142,
+      "longitude": 12.958634499999999,
+      "altitude": 84.599,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151790900115488,
+      "timestamp_sec": 1729151790.9001155,
+      "latitude": 52.4674135,
+      "longitude": 12.9586271,
+      "altitude": 84.574,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151792153543267,
+      "timestamp_sec": 1729151792.1535432,
+      "latitude": 52.4674128,
+      "longitude": 12.958619599999999,
+      "altitude": 84.561,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151793401018239,
+      "timestamp_sec": 1729151793.4010181,
+      "latitude": 52.467411899999995,
+      "longitude": 12.9586122,
+      "altitude": 84.551,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151794649212111,
+      "timestamp_sec": 1729151794.6492121,
+      "latitude": 52.4674111,
+      "longitude": 12.9586045,
+      "altitude": 84.515,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151795901600629,
+      "timestamp_sec": 1729151795.9016006,
+      "latitude": 52.4674103,
+      "longitude": 12.9585972,
+      "altitude": 84.502,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151797153173009,
+      "timestamp_sec": 1729151797.153173,
+      "latitude": 52.4674097,
+      "longitude": 12.958589799999999,
+      "altitude": 84.491,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151798403757378,
+      "timestamp_sec": 1729151798.4037573,
+      "latitude": 52.467408999999996,
+      "longitude": 12.9585821,
+      "altitude": 84.47200000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151799652189476,
+      "timestamp_sec": 1729151799.6521895,
+      "latitude": 52.467408199999994,
+      "longitude": 12.9585745,
+      "altitude": 84.44200000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151800898910237,
+      "timestamp_sec": 1729151800.8989103,
+      "latitude": 52.4674074,
+      "longitude": 12.958566999999999,
+      "altitude": 84.435,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151802147307804,
+      "timestamp_sec": 1729151802.1473079,
+      "latitude": 52.467406499999996,
+      "longitude": 12.9585595,
+      "altitude": 84.411,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151803397172232,
+      "timestamp_sec": 1729151803.3971722,
+      "latitude": 52.467405799999995,
+      "longitude": 12.958552,
+      "altitude": 84.385,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151804647512750,
+      "timestamp_sec": 1729151804.647513,
+      "latitude": 52.467405199999995,
+      "longitude": 12.9585444,
+      "altitude": 84.35600000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151805895289281,
+      "timestamp_sec": 1729151805.8952894,
+      "latitude": 52.4674044,
+      "longitude": 12.958537,
+      "altitude": 84.34700000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151807147789309,
+      "timestamp_sec": 1729151807.1477892,
+      "latitude": 52.4674037,
+      "longitude": 12.958529599999999,
+      "altitude": 84.336,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151808390792814,
+      "timestamp_sec": 1729151808.3907926,
+      "latitude": 52.467402799999995,
+      "longitude": 12.9585219,
+      "altitude": 84.308,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151809646526873,
+      "timestamp_sec": 1729151809.646527,
+      "latitude": 52.4674021,
+      "longitude": 12.9585145,
+      "altitude": 84.292,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151811027303519,
+      "timestamp_sec": 1729151811.0273035,
+      "latitude": 52.4674013,
+      "longitude": 12.9585066,
+      "altitude": 84.291,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151812151671457,
+      "timestamp_sec": 1729151812.1516716,
+      "latitude": 52.4674005,
+      "longitude": 12.9584993,
+      "altitude": 84.261,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151813398865599,
+      "timestamp_sec": 1729151813.3988657,
+      "latitude": 52.4673999,
+      "longitude": 12.9584919,
+      "altitude": 84.253,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151814646326196,
+      "timestamp_sec": 1729151814.6463263,
+      "latitude": 52.467399199999996,
+      "longitude": 12.958484499999999,
+      "altitude": 84.226,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151815894910012,
+      "timestamp_sec": 1729151815.8949099,
+      "latitude": 52.4673983,
+      "longitude": 12.958477,
+      "altitude": 84.205,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151817148871588,
+      "timestamp_sec": 1729151817.1488717,
+      "latitude": 52.4673975,
+      "longitude": 12.9584695,
+      "altitude": 84.184,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151818401782444,
+      "timestamp_sec": 1729151818.4017825,
+      "latitude": 52.467396799999996,
+      "longitude": 12.9584618,
+      "altitude": 84.14,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151819645898699,
+      "timestamp_sec": 1729151819.6458988,
+      "latitude": 52.467396,
+      "longitude": 12.958454399999999,
+      "altitude": 84.156,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151820896796607,
+      "timestamp_sec": 1729151820.8967967,
+      "latitude": 52.4673952,
+      "longitude": 12.9584469,
+      "altitude": 84.132,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151822151009743,
+      "timestamp_sec": 1729151822.1510098,
+      "latitude": 52.4673945,
+      "longitude": 12.9584394,
+      "altitude": 84.126,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151823399225905,
+      "timestamp_sec": 1729151823.399226,
+      "latitude": 52.467393799999996,
+      "longitude": 12.958431899999999,
+      "altitude": 84.104,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151824645871511,
+      "timestamp_sec": 1729151824.6458716,
+      "latitude": 52.467392999999994,
+      "longitude": 12.9584244,
+      "altitude": 84.062,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151825897723472,
+      "timestamp_sec": 1729151825.8977234,
+      "latitude": 52.4673922,
+      "longitude": 12.9584169,
+      "altitude": 84.052,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151827147616858,
+      "timestamp_sec": 1729151827.1476169,
+      "latitude": 52.4673915,
+      "longitude": 12.9584093,
+      "altitude": 84.032,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151828395683074,
+      "timestamp_sec": 1729151828.395683,
+      "latitude": 52.4673908,
+      "longitude": 12.9584017,
+      "altitude": 84.017,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151829648773669,
+      "timestamp_sec": 1729151829.6487737,
+      "latitude": 52.467389999999995,
+      "longitude": 12.9583944,
+      "altitude": 84.0,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151830889193144,
+      "timestamp_sec": 1729151830.8891933,
+      "latitude": 52.4673892,
+      "longitude": 12.958387,
+      "altitude": 83.986,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151832150863239,
+      "timestamp_sec": 1729151832.1508634,
+      "latitude": 52.4673885,
+      "longitude": 12.9583792,
+      "altitude": 83.95100000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151833404840841,
+      "timestamp_sec": 1729151833.404841,
+      "latitude": 52.467387699999996,
+      "longitude": 12.9583718,
+      "altitude": 83.918,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151834647939244,
+      "timestamp_sec": 1729151834.6479394,
+      "latitude": 52.4673869,
+      "longitude": 12.958364399999999,
+      "altitude": 83.919,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151835900502327,
+      "timestamp_sec": 1729151835.9005022,
+      "latitude": 52.4673861,
+      "longitude": 12.958356799999999,
+      "altitude": 83.877,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151837272398849,
+      "timestamp_sec": 1729151837.272399,
+      "latitude": 52.4673855,
+      "longitude": 12.9583487,
+      "altitude": 83.859,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151838523470620,
+      "timestamp_sec": 1729151838.5234706,
+      "latitude": 52.4673849,
+      "longitude": 12.9583408,
+      "altitude": 83.833,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151839772650566,
+      "timestamp_sec": 1729151839.7726505,
+      "latitude": 52.467383999999996,
+      "longitude": 12.9583335,
+      "altitude": 83.828,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151841029926000,
+      "timestamp_sec": 1729151841.0299258,
+      "latitude": 52.4673829,
+      "longitude": 12.958326099999999,
+      "altitude": 83.819,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151842275007759,
+      "timestamp_sec": 1729151842.2750077,
+      "latitude": 52.467382099999995,
+      "longitude": 12.958318499999999,
+      "altitude": 83.781,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151843663371413,
+      "timestamp_sec": 1729151843.6633716,
+      "latitude": 52.467381499999995,
+      "longitude": 12.958310599999999,
+      "altitude": 83.785,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151844901115591,
+      "timestamp_sec": 1729151844.9011157,
+      "latitude": 52.467380899999995,
+      "longitude": 12.958302999999999,
+      "altitude": 83.769,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151846155266822,
+      "timestamp_sec": 1729151846.1552668,
+      "latitude": 52.4673801,
+      "longitude": 12.9582949,
+      "altitude": 83.718,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151847526329690,
+      "timestamp_sec": 1729151847.5263295,
+      "latitude": 52.467379199999996,
+      "longitude": 12.9582872,
+      "altitude": 83.71600000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151848773203582,
+      "timestamp_sec": 1729151848.7732034,
+      "latitude": 52.4673783,
+      "longitude": 12.9582795,
+      "altitude": 83.68900000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151850036660036,
+      "timestamp_sec": 1729151850.03666,
+      "latitude": 52.4673776,
+      "longitude": 12.9582721,
+      "altitude": 83.674,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151851279003165,
+      "timestamp_sec": 1729151851.2790031,
+      "latitude": 52.4673768,
+      "longitude": 12.9582648,
+      "altitude": 83.676,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151852522133123,
+      "timestamp_sec": 1729151852.5221334,
+      "latitude": 52.467376099999996,
+      "longitude": 12.9582572,
+      "altitude": 83.656,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151853779216734,
+      "timestamp_sec": 1729151853.7792165,
+      "latitude": 52.4673756,
+      "longitude": 12.9582496,
+      "altitude": 83.627,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151855034820765,
+      "timestamp_sec": 1729151855.0348208,
+      "latitude": 52.467374799999995,
+      "longitude": 12.958242199999999,
+      "altitude": 83.623,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151856279927799,
+      "timestamp_sec": 1729151856.2799277,
+      "latitude": 52.4673739,
+      "longitude": 12.9582347,
+      "altitude": 83.608,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151857530010003,
+      "timestamp_sec": 1729151857.5300102,
+      "latitude": 52.467373099999996,
+      "longitude": 12.9582269,
+      "altitude": 83.578,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151858901795639,
+      "timestamp_sec": 1729151858.9017956,
+      "latitude": 52.4673721,
+      "longitude": 12.958218899999999,
+      "altitude": 83.557,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151860278568983,
+      "timestamp_sec": 1729151860.278569,
+      "latitude": 52.467371299999996,
+      "longitude": 12.9582108,
+      "altitude": 83.56,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151861525450828,
+      "timestamp_sec": 1729151861.5254507,
+      "latitude": 52.4673707,
+      "longitude": 12.958203,
+      "altitude": 83.532,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151862776642952,
+      "timestamp_sec": 1729151862.776643,
+      "latitude": 52.4673702,
+      "longitude": 12.9581956,
+      "altitude": 83.517,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151864038570908,
+      "timestamp_sec": 1729151864.0385711,
+      "latitude": 52.4673692,
+      "longitude": 12.958188,
+      "altitude": 83.495,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151865280904550,
+      "timestamp_sec": 1729151865.2809045,
+      "latitude": 52.467368199999996,
+      "longitude": 12.9581805,
+      "altitude": 83.461,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151866531213687,
+      "timestamp_sec": 1729151866.5312135,
+      "latitude": 52.467367599999996,
+      "longitude": 12.9581731,
+      "altitude": 83.44500000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151867776603160,
+      "timestamp_sec": 1729151867.7766032,
+      "latitude": 52.467366999999996,
+      "longitude": 12.9581656,
+      "altitude": 83.427,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151869041645716,
+      "timestamp_sec": 1729151869.0416458,
+      "latitude": 52.4673665,
+      "longitude": 12.9581582,
+      "altitude": 83.43900000000001,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151870287151152,
+      "timestamp_sec": 1729151870.287151,
+      "latitude": 52.4673654,
+      "longitude": 12.958150499999999,
+      "altitude": 83.401,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151871542141677,
+      "timestamp_sec": 1729151871.5421417,
+      "latitude": 52.4673644,
+      "longitude": 12.9581428,
+      "altitude": 83.37,
+      "status": 2
+    },
+    {
+      "timestamp": 1729151875156188371,
+      "timestamp_sec": 1729151875.1561885,
+      "latitude": 52.467363999999996,
+      "longitude": 12.958139099999999,
+      "altitude": 83.308,
+      "status": 2
+    }
+  ]
+}
