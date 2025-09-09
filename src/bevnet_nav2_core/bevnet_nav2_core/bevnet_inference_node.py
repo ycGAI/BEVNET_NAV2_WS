@@ -96,7 +96,7 @@ class BEVNetInferenceNode(Node):
         
         # QoS配置
         qos = QoSProfile(
-            reliability=ReliabilityPolicy.BEST_EFFORT,
+            reliability=ReliabilityPolicy.RELIABLE,  # 匹配 MCAP 的设置
             history=HistoryPolicy.KEEP_LAST,
             depth=1
         )
@@ -254,7 +254,7 @@ class BEVNetInferenceNode(Node):
         # 语义数据（翻转以匹配ROS坐标系）
         semantic_flipped = np.flipud(semantic_map)
         msg.semantic_map = semantic_flipped.flatten().astype(np.uint8).tolist()
-        msg.num_classes = np.uint8(self.num_classes)
+        msg.num_classes = int(self.num_classes)
         
         # 类别名称
         msg.class_names = self.class_names
@@ -359,6 +359,60 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-# export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH
-# cd /bevnet_nav2_ws
-# python3 src/bevnet_nav2_core/bevnet_nav2_core/bevnet_inference_node.py
+
+'''
+source /opt/ros/foxy/setup.bash
+cd /workspace/bevnet_nav2_ws
+source install/setup.bash
+export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH
+python3 src/bevnet_nav2_core/bevnet_nav2_core/bevnet_inference_node.py
+'''
+
+
+
+
+
+'''
+python3 << 'EOF'
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import PointCloud2, PointField
+import numpy as np
+
+rclpy.init()
+node = Node('test_pub')
+pub = node.create_publisher(PointCloud2, '/velodyne_points', 10)
+
+msg = PointCloud2()
+msg.header.frame_id = 'velodyne'
+
+# 生成测试数据
+points = np.random.randn(10000, 4).astype(np.float32)
+points[:, :3] *= 30
+points[:, 3] = np.abs(points[:, 3]) * 100
+
+msg.height = 1
+msg.width = 10000
+msg.fields = [
+    PointField(name='x', offset=0, datatype=7, count=1),
+    PointField(name='y', offset=4, datatype=7, count=1),
+    PointField(name='z', offset=8, datatype=7, count=1),
+    PointField(name='intensity', offset=12, datatype=7, count=1)
+]
+msg.point_step = 16
+msg.row_step = 16 * 10000
+msg.data = points.tobytes()
+msg.is_dense = True
+
+print("Publishing test pointclouds at 10Hz...")
+for i in range(100):
+    msg.header.stamp = node.get_clock().now().to_msg()
+    pub.publish(msg)
+    if i % 10 == 0:
+        print(f"Published {i} messages")
+    rclpy.spin_once(node, timeout_sec=0.1)
+
+print("Done!")
+rclpy.shutdown()
+EOF
+'''
