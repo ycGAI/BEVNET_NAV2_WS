@@ -1,0 +1,269 @@
+# Nav2 参数配置文件 - 集成BEVNet
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: False
+    global_frame: map
+    robot_frame: base_link
+    bt_loop_duration: 10
+    default_server_timeout: 20
+
+controller_server:
+  ros__parameters:
+    use_sim_time: False
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugin: "goal_checker"
+    controller_plugins: ["FollowPath"]
+    
+    # Progress checker
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+      
+    # Goal checker
+    goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+      stateful: True
+      
+    # Controller
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 0.5
+      max_vel_y: 0.0
+      max_vel_theta: 1.0
+      
+      # 轨迹生成
+      sim_time: 1.7
+      vx_samples: 20
+      vy_samples: 5
+      vtheta_samples: 20
+      
+      # 路径跟踪
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+      trans_stopped_velocity: 0.25
+      
+      # 评价函数
+      critics:
+        - RotateToGoal
+        - Oscillation
+        - BaseObstacle
+        - GoalAlign
+        - PathAlign
+        - PathDist
+        - GoalDist
+      
+      # 评价权重
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 32.0
+      PathDist.scale: 32.0
+      GoalAlign.scale: 24.0
+      GoalDist.scale: 24.0
+      RotateToGoal.scale: 32.0
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_frame: base_link
+      use_sim_time: False
+      rolling_window: true
+      width: 10
+      height: 10
+      resolution: 0.2
+      
+      # 机器人半径（用于计算膨胀）
+      robot_radius: 0.3
+      
+      # 插件配置 - 注意顺序很重要！
+      plugins: ["bevnet_layer", "obstacle_layer", "inflation_layer"]
+      
+      # BEVNet层 - 提供语义感知的基础地图
+      bevnet_layer:
+        plugin: "bevnet_nav2_core::BEVNetCostmapLayer"
+        enabled: true
+        bevnet_topic: "/bevnet/costmap"        # 使用预处理的代价地图
+        use_bevnet_semantic: false             # false=使用costmap, true=使用semantic_map
+        semantic_weight: 0.7                   # 融合权重
+        combination_method: "weighted_average" # 融合方法: maximum/weighted_average/override
+        
+      # 障碍物层 - 实时传感器数据
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan pointcloud
+        
+        # 激光雷达配置
+        scan:
+          topic: /scan
+          sensor_frame: velodyne
+          observation_persistence: 0.0
+          expected_update_rate: 10.0
+          data_type: "LaserScan"
+          min_obstacle_height: 0.25
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 12.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.0
+          
+        # 点云配置（可选）
+        pointcloud:
+          topic: /velodyne_points
+          sensor_frame: velodyne
+          observation_persistence: 0.0
+          expected_update_rate: 10.0
+          data_type: "PointCloud2"
+          min_obstacle_height: 0.15
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 12.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.0
+          
+      # 膨胀层 - 安全边界
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
+        inflate_unknown: false
+        inflate_around_unknown: false
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_frame: base_link
+      use_sim_time: False
+      
+      # 机器人半径
+      robot_radius: 0.3
+      
+      # 地图大小（米）
+      width: 100.0
+      height: 100.0
+      resolution: 0.2
+      origin_x: -50.0
+      origin_y: -50.0
+      
+      # 插件配置
+      plugins: ["static_layer", "bevnet_layer", "obstacle_layer", "inflation_layer"]
+      
+      # 静态层 - SLAM地图（如果有）
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: false  # 如果没有SLAM地图，设为false
+        map_subscribe_transient_local: true
+        subscribe_to_updates: true
+        
+      # BEVNet层 - 全局语义信息
+      bevnet_layer:
+        plugin: "bevnet_nav2_core::BEVNetCostmapLayer"
+        enabled: true
+        bevnet_topic: "/bevnet/costmap"
+        use_bevnet_semantic: false   # 可以设为true使用语义信息
+        semantic_weight: 0.8         # 全局地图中BEVNet权重更高
+        combination_method: "weighted_average"
+        
+      # 障碍物层 - 持久化的障碍物
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: velodyne
+          observation_persistence: 0.0
+          expected_update_rate: 10.0
+          data_type: "LaserScan"
+          min_obstacle_height: 0.25
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 15.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 12.0
+          obstacle_min_range: 0.0
+        
+      # 膨胀层
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
+        inflate_unknown: false
+        inflate_around_unknown: false
+
+planner_server:
+  ros__parameters:
+    use_sim_time: False
+    expected_planner_frequency: 20.0
+    planner_plugins: ["GridBased"]
+    
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+      
+      # 考虑BEVNet语义的路径规划
+      # 代价会自动从costmap获取
+
+recoveries_server:
+  ros__parameters:
+    use_sim_time: False
+    recovery_plugins: ["spin", "backup", "wait"]
+    
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    backup:
+      plugin: "nav2_recoveries/BackUp"
+    wait:
+      plugin: "nav2_recoveries/Wait"
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: False
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: true
+      waypoint_pause_duration: 200
+
+# BEVNet特定参数
+bevnet_params:
+  ros__parameters:
+    # 语义类别到导航代价的映射
+    semantic_mapping:
+      free_space: 0      # 完全自由
+      road: 10          # 道路（优先）
+      sidewalk: 30      # 人行道（可通行）
+      obstacle: 254     # 障碍物（不可通行）
+      unknown: 255      # 未知
+    
+    # 融合策略
+    fusion_strategy:
+      local_bevnet_weight: 0.7    # 局部地图中BEVNet权重
+      global_bevnet_weight: 0.8   # 全局地图中BEVNet权重
+      trust_bevnet_obstacles: true # 信任BEVNet检测的障碍物
+      prefer_road_areas: true      # 优先选择道路区域

@@ -65,3 +65,5 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
+# export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH 
