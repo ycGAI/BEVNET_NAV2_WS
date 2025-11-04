@@ -159,7 +159,7 @@ global_costmap:
       
       # 地图大小（米）
       width: 100.0
-      height: 100.0
+      height: 100
       resolution: 0.2
       origin_x: -50.0
       origin_y: -50.0

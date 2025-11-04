@@ -14,3 +14,6 @@ ros2 run gps_waypoint_nav gps_path_publisher \
     -p use_utm:=true \
     -p frame_id:=map \
     -p publish_markers:=true
+
+
+# 这个是老的版本， 新的版本，使用kitti数据中pose.txt作为全局路径规划的版本在/workspace/bevnet_nav2_ws/src/gps_waypoint_nav/gps_waypoint_nav/gps_waypoint_follower.py

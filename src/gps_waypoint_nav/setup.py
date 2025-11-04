@@ -33,6 +33,7 @@ setup(
         'console_scripts': [
             'extract_gps_from_mcap = gps_waypoint_nav.gps_extractor:main',
             'gps_path_publisher = gps_waypoint_nav.gps_path_publisher:main',
+            'gps_waypoint_follower = gps_waypoint_nav.gps_waypoint_follower:main',  # ← 添加这一行
         ],
     },
 )

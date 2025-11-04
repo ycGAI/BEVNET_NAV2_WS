@@ -18,6 +18,7 @@ from cv_bridge import CvBridge
 import struct
 
 from bevnet.inference import BEVNetSingle, BEVNetRecurrent
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 
 class BEVNetInferenceNode(Node):
     def __init__(self, model_path, model_type='single'):
@@ -47,11 +48,25 @@ class BEVNetInferenceNode(Node):
         self.bridge = CvBridge()
         
         # 订阅点云
+        # self.pc_sub = self.create_subscription(
+        #     PointCloud2,
+        #     '/velodyne_points',
+        #     self.pointcloud_callback,
+        #     10
+        # )
+        # 配置QoS - 匹配发布器的BEST_EFFORT
+        qos_profile = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+            depth=10
+        )
+
+        # 订阅点云 - 使用兼容的QoS
         self.pc_sub = self.create_subscription(
             PointCloud2,
             '/velodyne_points',
             self.pointcloud_callback,
-            10
+            qos_profile  # 使用BEST_EFFORT而不是默认的RELIABLE
         )
         
         # 发布器
@@ -69,6 +84,24 @@ class BEVNetInferenceNode(Node):
     
     def pointcloud_callback(self, msg):
         """处理点云消息"""
+        # ============ 添加调试信息 ============
+        self.get_logger().info(f'!!! Received PointCloud: {msg.width} points, {len(msg.data)} bytes !!!')
+        
+        # 先发布一个测试costmap，确认发布器工作
+        test_map = OccupancyGrid()
+        test_map.header = msg.header
+        test_map.header.frame_id = "map"
+        test_map.info.resolution = 1.0
+        test_map.info.width = 10
+        test_map.info.height = 10
+        test_map.info.origin.position.x = -5.0
+        test_map.info.origin.position.y = -5.0
+        test_map.info.origin.orientation.w = 1.0
+        test_map.data = [50] * 100  # 50表示未知区域
+        
+        self.costmap_pub.publish(test_map)
+        self.get_logger().info('>>> Test costmap published!')
+        # ============ 调试信息结束 ============
         try:
             # 解析点云
             points = self.parse_pointcloud(msg)

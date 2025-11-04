@@ -52,6 +52,12 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
 )
 
+pluginlib_export_plugin_description_file(nav2_costmap_2d plugins.xml)
+
+install(FILES plugins.xml
+  DESTINATION share/${PROJECT_NAME}
+)
+
 # Install headers
 install(DIRECTORY include/
   DESTINATION include/

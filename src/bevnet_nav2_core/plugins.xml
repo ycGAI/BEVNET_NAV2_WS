@@ -1,9 +1,9 @@
-<library path="bevnet_nav2_core">
-  <class name="bevnet_nav2_core::BEVNetCostmapLayer" 
-         type="bevnet_nav2_core::BEVNetCostmapLayer" 
+<library path="libbevnet_nav2_core">
+  <class name="bevnet_nav2_core::BEVNetCostmapLayer"
+         type="bevnet_nav2_core::BEVNetCostmapLayer"
          base_class_type="nav2_costmap_2d::Layer">
     <description>
-      BEVNet semantic costmap layer for Navigation2
+      BEVNet semantic costmap layer for Navigation2.
     </description>
   </class>
 </library>
