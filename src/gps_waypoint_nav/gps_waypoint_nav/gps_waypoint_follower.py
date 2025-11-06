@@ -82,14 +82,22 @@ class GPSWaypointFollower(Node):
         )
         
         # 定时器
+        # 定时器
         self.timer = self.create_timer(1.0, self.update_navigation)
-        
+        # 添加路径发布定时器 - 持续发布供可视化
+        self.path_publish_timer = self.create_timer(1.0, self.publish_path)
+
         # 发布初始路径
         self.publish_path()
-        
-        # 等待Nav2就绪
+
+        # 等待Nav2就绪（添加超时避免永久阻塞）
         self.get_logger().info('Waiting for Nav2 action server...')
-        self.nav_client.wait_for_server()
+        if not self.nav_client.wait_for_server(timeout_sec=10.0):
+            self.get_logger().warn('Nav2 not ready after 10s, continuing anyway...')
+        else:
+            self.get_logger().info('Nav2 ready! Starting navigation...')
+            # 开始导航
+            self.navigate_to_next_waypoint()
         self.get_logger().info('Nav2 ready! Starting navigation...')
         
         # 开始导航
