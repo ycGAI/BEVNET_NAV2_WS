@@ -297,53 +297,17 @@ class KittiPlayerNormalized(Node):
     
     def publish_tf(self, pose):
         """发布TF"""
-        transforms = []
+        t = TransformStamped()
+        t.header = pose.header
+        t.header.frame_id = 'map'
+        t.child_frame_id = 'velodyne'
         
-        # map -> velodyne (原有的)
-        t1 = TransformStamped()
-        t1.header.stamp = self.get_clock().now().to_msg()
-        t1.header.frame_id = 'map'
-        t1.child_frame_id = 'velodyne'
-        t1.transform.translation.x = pose.pose.position.x
-        t1.transform.translation.y = pose.pose.position.y
-        t1.transform.translation.z = pose.pose.position.z
-        t1.transform.rotation = pose.pose.orientation
-        transforms.append(t1)
+        t.transform.translation.x = pose.pose.position.x
+        t.transform.translation.y = pose.pose.position.y
+        t.transform.translation.z = pose.pose.position.z  # 已经归一化了
+        t.transform.rotation = pose.pose.orientation
         
-        # map -> odom (固定)
-        t2 = TransformStamped()
-        t2.header.stamp = self.get_clock().now().to_msg()
-        t2.header.frame_id = 'map'
-        t2.child_frame_id = 'odom'
-        t2.transform.translation.x = 0.0
-        t2.transform.translation.y = 0.0
-        t2.transform.translation.z = 0.0
-        t2.transform.rotation.w = 1.0
-        transforms.append(t2)
-        
-        # odom -> base_link (跟随velodyne)
-        t3 = TransformStamped()
-        t3.header.stamp = self.get_clock().now().to_msg()
-        t3.header.frame_id = 'odom'
-        t3.child_frame_id = 'base_link'
-        t3.transform.translation.x = pose.pose.position.x
-        t3.transform.translation.y = pose.pose.position.y
-        t3.transform.translation.z = 0.0
-        t3.transform.rotation = pose.pose.orientation
-        transforms.append(t3)
-        
-        # base_link -> velodyne (固定)
-        t4 = TransformStamped()
-        t4.header.stamp = self.get_clock().now().to_msg()
-        t4.header.frame_id = 'base_link'
-        t4.child_frame_id = 'velodyne'
-        t4.transform.translation.x = 0.0
-        t4.transform.translation.y = 0.0
-        t4.transform.translation.z = 0.0
-        t4.transform.rotation.w = 1.0
-        transforms.append(t4)
-        
-        self.tf_broadcaster.sendTransform(transforms)
+        self.tf_broadcaster.sendTransform(t)
     
     def publish_frame(self):
         """发布当前帧"""
