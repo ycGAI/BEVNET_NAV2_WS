@@ -1,0 +1,160 @@
+# Nav2配置 - 集成GPS全局规划和BEVNet局部避障
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: False
+    global_frame: map
+    robot_frame: base_link
+    odom_topic: /odom
+    default_server_timeout: 20
+    default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
+    plugin_lib_names:
+    - nav2_compute_path_to_pose_action_bt_node
+    - nav2_follow_path_action_bt_node
+    - nav2_back_up_action_bt_node
+    - nav2_spin_action_bt_node
+    - nav2_wait_action_bt_node
+    - nav2_clear_costmap_service_bt_node
+    - nav2_is_stuck_condition_bt_node
+    - nav2_goal_reached_condition_bt_node
+    - nav2_goal_updated_condition_bt_node
+    - nav2_initial_pose_received_condition_bt_node
+    - nav2_reinitialize_global_localization_service_bt_node
+    - nav2_rate_controller_bt_node
+    - nav2_distance_controller_bt_node
+    - nav2_speed_controller_bt_node
+    - nav2_truncate_path_action_bt_node
+    - nav2_goal_updater_node_bt_node
+    - nav2_recovery_node_bt_node
+    - nav2_pipeline_sequence_bt_node
+    - nav2_round_robin_node_bt_node
+    - nav2_transform_available_condition_bt_node
+    - nav2_time_expired_condition_bt_node
+    - nav2_distance_traveled_condition_bt_node
+
+controller_server:
+  ros__parameters:
+    use_sim_time: False
+    controller_frequency: 10.0
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugin: "goal_checker"
+    controller_plugins: ["FollowPath"]
+    
+    # 非常宽松的检查器（因为是演示）
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 100.0  # 100米（基本不检查）
+      movement_time_allowance: 1000.0  # 1000秒
+      
+    goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 5.0  # 5米容忍度
+      yaw_goal_tolerance: 6.28  # 任意角度
+      stateful: True
+      
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      min_vel_x: 0.0
+      max_vel_x: 2.0
+      max_vel_theta: 1.0
+      xy_goal_tolerance: 5.0
+      transform_tolerance: 10.0  # 10秒容忍度
+      critics: ["GoalAlign", "PathAlign", "BaseObstacle"]
+      BaseObstacle.scale: 100.0  # 使用BEVNet的障碍物
+      PathAlign.scale: 32.0
+      GoalAlign.scale: 24.0
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_frame: base_link
+      use_sim_time: False
+      rolling_window: true
+      width: 30  # 30米局部窗口
+      height: 30
+      resolution: 0.2
+      robot_radius: 0.5
+      
+      # 使用BEVNet进行局部避障
+      plugins: ["bevnet_layer", "inflation_layer"]
+      
+      bevnet_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        map_topic: "/bevnet/costmap"  # 订阅BEVNet的costmap
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        cost_scaling_factor: 10.0
+        inflation_radius: 1.0
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_frame: base_link
+      use_sim_time: False
+      robot_radius: 0.5
+      
+      # 大范围滚动窗口
+      rolling_window: true
+      width: 1000  # 200米范围
+      height: 1000
+      resolution: 0.2
+      
+      # 全局规划主要考虑GPS路径，BEVNet作为参考
+      plugins: ["static_layer", "inflation_layer"]
+      
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        map_topic: "/bevnet/costmap"  # 也使用BEVNet，但权重较低
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        cost_scaling_factor: 5.0  # 全局规划时膨胀较小
+        inflation_radius: 0.5
+
+planner_server:
+  ros__parameters:
+    use_sim_time: False
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 2.0
+      use_astar: false
+      allow_unknown: true  # 允许在未知区域规划
+
+recoveries_server:
+  ros__parameters:
+    use_sim_time: False
+    recovery_plugins: ["spin", "backup", "wait"]
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    backup:
+      plugin: "nav2_recoveries/BackUp"
+    wait:
+      plugin: "nav2_recoveries/Wait"
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: False
+
+amcl:
+  ros__parameters:
+    use_sim_time: False
+    base_frame_id: "base_link"
+    global_frame_id: "map"
+    odom_frame_id: "odom"
+    transform_tolerance: 10.0  # 非常宽松

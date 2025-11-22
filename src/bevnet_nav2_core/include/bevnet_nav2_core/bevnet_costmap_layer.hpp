@@ -1,23 +1,23 @@
+// bevnet_costmap_layer.hpp
 #ifndef BEVNET_NAV2_CORE__BEVNET_COSTMAP_LAYER_HPP_
 #define BEVNET_NAV2_CORE__BEVNET_COSTMAP_LAYER_HPP_
 
 #include <memory>
 #include <string>
 #include <vector>
+#include <mutex>
+#include <unordered_map>
 
+#include "rclcpp/rclcpp.hpp"
 #include "nav2_costmap_2d/layer.hpp"
 #include "nav2_costmap_2d/layered_costmap.hpp"
-#include "nav2_costmap_2d/costmap_layer.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
-#include "bevnet_nav2_msgs/msg/bev_map.hpp"
-#include "bevnet_nav2_msgs/msg/semantic_costmap.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "tf2_ros/buffer.h"
+#include "std_msgs/msg/int32_multi_array.hpp"
 
 namespace bevnet_nav2_core
 {
 
-class BEVNetCostmapLayer : public nav2_costmap_2d::CostmapLayer
+class BEVNetCostmapLayer : public nav2_costmap_2d::Layer
 {
 public:
   BEVNetCostmapLayer();
@@ -25,62 +25,62 @@ public:
 
   virtual void onInitialize();
   virtual void updateBounds(
-    double robot_x, double robot_y, double robot_yaw,
-    double * min_x, double * min_y, double * max_x, double * max_y);
+    double robot_x, double robot_y, double robot_yaw, double * min_x,
+    double * min_y, double * max_x, double * max_y);
   virtual void updateCosts(
     nav2_costmap_2d::Costmap2D & master_grid,
     int min_i, int min_j, int max_i, int max_j);
-
-  virtual void reset()
-  {
-    deactivate();
-    activate();
-  }
-
+  
   virtual void activate();
   virtual void deactivate();
-
-  virtual bool isClearable() {return false;}
+  virtual void reset() {}
 
 private:
   void bevnetCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
-  void semanticMapCallback(const bevnet_nav2_msgs::msg::BEVMap::SharedPtr msg);
+  void semanticCallback(const std_msgs::msg::Int32MultiArray::SharedPtr msg);
   
-  unsigned char interpretValue(unsigned char value);
-  void processSemanticMap(const bevnet_nav2_msgs::msg::BEVMap & semantic_map);
-  void updateCostmapFromBEVNet();
-
-  std::string global_frame_;
+  // 订阅器
+  rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr bevnet_sub_;
+  rclcpp::Subscription<std_msgs::msg::Int32MultiArray>::SharedPtr semantic_sub_;
+  
+  // 参数
   std::string bevnet_topic_;
+  std::string semantic_topic_;
+  std::string combination_method_;
   bool use_bevnet_semantic_;
   double semantic_weight_;
-  std::string combination_method_;
-  
-  nav_msgs::msg::OccupancyGrid::SharedPtr bevnet_costmap_;
-  bevnet_nav2_msgs::msg::BEVMap::SharedPtr semantic_map_;
-  
-  rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr bevnet_sub_;
-  rclcpp::Subscription<bevnet_nav2_msgs::msg::BEVMap>::SharedPtr semantic_sub_;
-  
-  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
-  
-  bool has_bevnet_data_;
-  bool rolling_window_;
   bool use_maximum_;
-  double update_frequency_;
   
-  // 语义类别到代价的映射
-  std::map<int, unsigned char> semantic_to_cost_;
+  // Layer基础变量（Nav2需要的）
+  std::string global_frame_;
+  bool rolling_window_;
+  unsigned char default_value_;
   
-  std::mutex data_mutex_;
-  
-  // BEVNet数据缓存
+  // BEVNet数据
+  nav_msgs::msg::OccupancyGrid::SharedPtr bevnet_costmap_;
   std::vector<unsigned char> bevnet_data_;
+  bool has_bevnet_data_;
+  
+  // BEVNet地图参数
   double bevnet_origin_x_;
   double bevnet_origin_y_;
   unsigned int bevnet_size_x_;
   unsigned int bevnet_size_y_;
   double bevnet_resolution_;
+  std::string bevnet_frame_id_;
+  
+  // 语义数据
+  std::vector<int> semantic_data_;
+  bool has_semantic_data_;
+  
+  // 语义到代价值的映射
+  std::unordered_map<int, unsigned char> semantic_to_cost_;
+  
+  // 互斥锁
+  std::mutex data_mutex_;
+  
+  // 注意：不再需要tf_buffer_成员变量
+  // 使用父类提供的 tf_ 成员变量
 };
 
 }  // namespace bevnet_nav2_core

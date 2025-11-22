@@ -1,4 +1,7 @@
-// src/bevnet_controller.cpp
+// bevnet_controller.cpp - 简化版本（兼容ROS2 Foxy）
+// 注意：由于Foxy API限制，这是一个简化实现
+// 建议在实际使用中直接使用DWB controller配合BEVNet costmap layer
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -23,58 +26,46 @@ public:
   BEVNetController() = default;
   ~BEVNetController() override = default;
 
+  // Foxy版本的configure函数签名
   void configure(
-    const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
+    const rclcpp_lifecycle::LifecycleNode::SharedPtr & parent,  // 注意：SharedPtr而不是WeakPtr
     std::string name,
-    std::shared_ptr<tf2_ros::Buffer> tf_buffer,
-    std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros) override
+    const std::shared_ptr<tf2_ros::Buffer> & tf_buffer,          // 注意：const引用
+    const std::shared_ptr<nav2_costmap_2d::Costmap2DROS> & costmap_ros) override
   {
     node_ = parent;
-    auto node = node_.lock();
     costmap_ros_ = costmap_ros;
     tf_buffer_ = tf_buffer;
     name_ = name;
-    logger_ = node->get_logger();
-    clock_ = node->get_clock();
+    logger_ = node_->get_logger();
+    clock_ = node_->get_clock();
 
     // 声明参数
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".max_vel_x", rclcpp::ParameterValue(0.5));
+      node_, name_ + ".max_vel_x", rclcpp::ParameterValue(0.5));
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".max_vel_theta", rclcpp::ParameterValue(1.0));
+      node_, name_ + ".max_vel_theta", rclcpp::ParameterValue(1.0));
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".min_vel_x", rclcpp::ParameterValue(0.0));
+      node_, name_ + ".min_vel_x", rclcpp::ParameterValue(0.0));
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".min_vel_theta", rclcpp::ParameterValue(-1.0));
+      node_, name_ + ".min_vel_theta", rclcpp::ParameterValue(-1.0));
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".lookahead_dist", rclcpp::ParameterValue(0.6));
+      node_, name_ + ".lookahead_dist", rclcpp::ParameterValue(0.6));
     nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".use_velocity_scaled_lookahead_dist", rclcpp::ParameterValue(false));
-    nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".min_lookahead_dist", rclcpp::ParameterValue(0.3));
-    nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".max_lookahead_dist", rclcpp::ParameterValue(0.9));
-    nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".lookahead_time", rclcpp::ParameterValue(1.5));
-    nav2_util::declare_parameter_if_not_declared(
-      node, name_ + ".bevnet_weight", rclcpp::ParameterValue(0.7));
+      node_, name_ + ".goal_tolerance", rclcpp::ParameterValue(0.25));
 
     // 获取参数
-    node->get_parameter(name_ + ".max_vel_x", max_vel_x_);
-    node->get_parameter(name_ + ".max_vel_theta", max_vel_theta_);
-    node->get_parameter(name_ + ".min_vel_x", min_vel_x_);
-    node->get_parameter(name_ + ".min_vel_theta", min_vel_theta_);
-    node->get_parameter(name_ + ".lookahead_dist", lookahead_dist_);
-    node->get_parameter(name_ + ".use_velocity_scaled_lookahead_dist", use_velocity_scaled_lookahead_dist_);
-    node->get_parameter(name_ + ".min_lookahead_dist", min_lookahead_dist_);
-    node->get_parameter(name_ + ".max_lookahead_dist", max_lookahead_dist_);
-    node->get_parameter(name_ + ".lookahead_time", lookahead_time_);
-    node->get_parameter(name_ + ".bevnet_weight", bevnet_weight_);
+    node_->get_parameter(name_ + ".max_vel_x", max_vel_x_);
+    node_->get_parameter(name_ + ".max_vel_theta", max_vel_theta_);
+    node_->get_parameter(name_ + ".min_vel_x", min_vel_x_);
+    node_->get_parameter(name_ + ".min_vel_theta", min_vel_theta_);
+    node_->get_parameter(name_ + ".lookahead_dist", lookahead_dist_);
+    node_->get_parameter(name_ + ".goal_tolerance", goal_tolerance_);
 
     // 发布局部路径用于可视化
-    local_path_pub_ = node->create_publisher<nav_msgs::msg::Path>("/local_plan", 1);
+    local_path_pub_ = node_->create_publisher<nav_msgs::msg::Path>("/local_plan", 1);
 
-    RCLCPP_INFO(logger_, "BEVNet Controller configured");
+    RCLCPP_INFO(logger_, "BEVNet Controller configured (Foxy compatible)");
   }
 
   void activate() override
@@ -91,6 +82,7 @@ public:
   {
     RCLCPP_INFO(logger_, "BEVNet Controller cleaning up");
     local_path_pub_.reset();
+    global_plan_.poses.clear();
   }
 
   void setPlan(const nav_msgs::msg::Path & path) override
@@ -98,25 +90,47 @@ public:
     global_plan_ = path;
   }
 
+  // Foxy版本的computeVelocityCommands（没有GoalChecker参数）
   geometry_msgs::msg::TwistStamped computeVelocityCommands(
     const geometry_msgs::msg::PoseStamped & pose,
-    const geometry_msgs::msg::Twist & velocity,
-    nav2_core::GoalChecker * goal_checker) override
+    const geometry_msgs::msg::Twist & velocity) override
   {
+    // 简单的纯追踪控制器实现
+    geometry_msgs::msg::TwistStamped cmd_vel;
+    cmd_vel.header.frame_id = pose.header.frame_id;
+    cmd_vel.header.stamp = clock_->now();
+
+    // 如果没有全局路径，停止
+    if (global_plan_.poses.empty()) {
+      cmd_vel.twist.linear.x = 0.0;
+      cmd_vel.twist.angular.z = 0.0;
+      return cmd_vel;
+    }
+
     // 获取机器人当前位置
     double robot_x = pose.pose.position.x;
     double robot_y = pose.pose.position.y;
     double robot_theta = tf2::getYaw(pose.pose.orientation);
 
-    // 计算前瞻点
-    auto lookahead_point = getLookAheadPoint(robot_x, robot_y, velocity);
-    
-    // 获取代价地图
-    nav2_costmap_2d::Costmap2D * costmap = costmap_ros_->getCostmap();
-    
-    // 基于BEVNet信息调整路径
-    adjustPathWithBEVNet(lookahead_point, robot_x, robot_y, costmap);
-    
+    // 找到前瞻点
+    geometry_msgs::msg::PoseStamped lookahead_point;
+    if (!findLookAheadPoint(robot_x, robot_y, lookahead_point)) {
+      // 如果找不到前瞻点，检查是否到达目标
+      auto & goal = global_plan_.poses.back();
+      double dist_to_goal = hypot(
+        goal.pose.position.x - robot_x,
+        goal.pose.position.y - robot_y);
+      
+      if (dist_to_goal < goal_tolerance_) {
+        // 到达目标，停止
+        cmd_vel.twist.linear.x = 0.0;
+        cmd_vel.twist.angular.z = 0.0;
+      } else {
+        // 向目标点移动
+        lookahead_point = goal;
+      }
+    }
+
     // 计算到前瞻点的角度
     double angle_to_goal = atan2(
       lookahead_point.pose.position.y - robot_y,
@@ -126,59 +140,38 @@ public:
     double angle_diff = angles::shortest_angular_distance(robot_theta, angle_to_goal);
     
     // 计算速度命令
-    geometry_msgs::msg::TwistStamped cmd_vel;
-    cmd_vel.header.frame_id = pose.header.frame_id;
-    cmd_vel.header.stamp = clock_->now();
-    
-    // 线速度控制
-    double dist_to_goal = hypot(
+    double dist_to_lookahead = hypot(
       lookahead_point.pose.position.x - robot_x,
       lookahead_point.pose.position.y - robot_y);
-    
-    if (fabs(angle_diff) > 0.2) {
+
+    // 线速度控制：根据角度差减速
+    if (fabs(angle_diff) > 0.5) {
       // 需要转弯时减速
       cmd_vel.twist.linear.x = min_vel_x_ + (max_vel_x_ - min_vel_x_) * 
-                               (1.0 - fabs(angle_diff) / M_PI);
+                               (1.0 - fabs(angle_diff) / M_PI) * 0.5;
     } else {
-      // 直行时加速
-      cmd_vel.twist.linear.x = std::min(max_vel_x_, dist_to_goal);
+      // 直行时加速，但根据距离限制速度
+      cmd_vel.twist.linear.x = std::min(max_vel_x_, 
+                                        std::min(dist_to_lookahead, max_vel_x_));
     }
-    
+
     // 角速度控制
     cmd_vel.twist.angular.z = std::max(min_vel_theta_, 
-                                      std::min(max_vel_theta_, 2.0 * angle_diff));
-    
+                                       std::min(max_vel_theta_, 2.0 * angle_diff));
+
     // 发布局部路径用于可视化
     publishLocalPath(pose, lookahead_point);
-    
+
     return cmd_vel;
   }
 
-  void setSpeedLimit(const double & speed_limit, const bool & percentage) override
-  {
-    if (percentage) {
-      max_vel_x_ = max_vel_x_ * speed_limit / 100.0;
-    } else {
-      max_vel_x_ = speed_limit;
-    }
-  }
-
 protected:
-  geometry_msgs::msg::PoseStamped getLookAheadPoint(
+  bool findLookAheadPoint(
     double robot_x, double robot_y,
-    const geometry_msgs::msg::Twist & velocity)
+    geometry_msgs::msg::PoseStamped & lookahead_point)
   {
-    // 计算前瞻距离
-    double lookahead_dist = lookahead_dist_;
-    if (use_velocity_scaled_lookahead_dist_) {
-      lookahead_dist = velocity.linear.x * lookahead_time_;
-      lookahead_dist = std::max(min_lookahead_dist_,
-                                std::min(max_lookahead_dist_, lookahead_dist));
-    }
-    
-    // 在全局路径上查找前瞻点
-    geometry_msgs::msg::PoseStamped lookahead_point;
-    double min_dist = std::numeric_limits<double>::max();
+    // 在全局路径中找到前瞻点
+    double closest_dist = std::numeric_limits<double>::max();
     size_t closest_idx = 0;
     
     // 找到最近的路径点
@@ -187,81 +180,31 @@ protected:
       double dy = global_plan_.poses[i].pose.position.y - robot_y;
       double dist = hypot(dx, dy);
       
-      if (dist < min_dist) {
-        min_dist = dist;
+      if (dist < closest_dist) {
+        closest_dist = dist;
         closest_idx = i;
       }
     }
     
-    // 从最近点开始查找前瞻点
+    // 从最近点开始，找到前瞻距离的点
     for (size_t i = closest_idx; i < global_plan_.poses.size(); ++i) {
       double dx = global_plan_.poses[i].pose.position.x - robot_x;
       double dy = global_plan_.poses[i].pose.position.y - robot_y;
       double dist = hypot(dx, dy);
       
-      if (dist >= lookahead_dist) {
+      if (dist >= lookahead_dist_) {
         lookahead_point = global_plan_.poses[i];
-        break;
+        return true;
       }
     }
     
     // 如果没找到，使用最后一个点
-    if (lookahead_point.header.frame_id.empty()) {
+    if (!global_plan_.poses.empty()) {
       lookahead_point = global_plan_.poses.back();
+      return true;
     }
     
-    return lookahead_point;
-  }
-
-  void adjustPathWithBEVNet(
-    geometry_msgs::msg::PoseStamped & lookahead_point,
-    double robot_x, double robot_y,
-    nav2_costmap_2d::Costmap2D * costmap)
-  {
-    // 基于BEVNet语义信息调整路径
-    // 这里可以实现更复杂的路径调整逻辑
-    
-    unsigned int mx, my;
-    if (!costmap->worldToMap(lookahead_point.pose.position.x, 
-                             lookahead_point.pose.position.y, mx, my)) {
-      return;
-    }
-    
-    unsigned char cost = costmap->getCost(mx, my);
-    
-    // 如果前瞻点代价太高，尝试找到附近的低代价点
-    if (cost > 200) {
-      // 在周围搜索低代价点
-      int search_radius = 5;
-      double min_cost = cost;
-      unsigned int best_mx = mx, best_my = my;
-      
-      for (int dx = -search_radius; dx <= search_radius; ++dx) {
-        for (int dy = -search_radius; dy <= search_radius; ++dy) {
-          unsigned int test_mx = mx + dx;
-          unsigned int test_my = my + dy;
-          
-          if (test_mx < costmap->getSizeInCellsX() && 
-              test_my < costmap->getSizeInCellsY()) {
-            unsigned char test_cost = costmap->getCost(test_mx, test_my);
-            
-            if (test_cost < min_cost) {
-              min_cost = test_cost;
-              best_mx = test_mx;
-              best_my = test_my;
-            }
-          }
-        }
-      }
-      
-      // 更新前瞻点位置
-      if (best_mx != mx || best_my != my) {
-        double wx, wy;
-        costmap->mapToWorld(best_mx, best_my, wx, wy);
-        lookahead_point.pose.position.x = wx;
-        lookahead_point.pose.position.y = wy;
-      }
-    }
+    return false;
   }
 
   void publishLocalPath(
@@ -270,14 +213,17 @@ protected:
   {
     nav_msgs::msg::Path local_path;
     local_path.header = start.header;
+    local_path.header.stamp = clock_->now();
     local_path.poses.push_back(start);
     local_path.poses.push_back(end);
     
-    local_path_pub_->publish(local_path);
+    if (local_path_pub_) {
+      local_path_pub_->publish(local_path);
+    }
   }
 
 private:
-  rclcpp_lifecycle::LifecycleNode::WeakPtr node_;
+  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
   rclcpp::Logger logger_{rclcpp::get_logger("BEVNetController")};
@@ -288,16 +234,12 @@ private:
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr local_path_pub_;
   
   // 参数
-  double max_vel_x_;
-  double max_vel_theta_;
-  double min_vel_x_;
-  double min_vel_theta_;
-  double lookahead_dist_;
-  bool use_velocity_scaled_lookahead_dist_;
-  double min_lookahead_dist_;
-  double max_lookahead_dist_;
-  double lookahead_time_;
-  double bevnet_weight_;
+  double max_vel_x_ = 0.5;
+  double max_vel_theta_ = 1.0;
+  double min_vel_x_ = 0.0;
+  double min_vel_theta_ = -1.0;
+  double lookahead_dist_ = 0.6;
+  double goal_tolerance_ = 0.25;
 };
 
 }  // namespace bevnet_nav2_core

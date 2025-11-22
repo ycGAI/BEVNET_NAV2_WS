@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-TF Publisher for BEVNet Navigation System
-从poses.txt读取机器人位置并发布TF变换
+High-frequency TF Publisher for BEVNet Navigation
+高频率发布TF变换，减少延迟
 """
 
 import rclpy
@@ -14,16 +14,17 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import PointCloud2
 import numpy as np
 import os
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
 
-class ImprovedTFPublisher(Node):
+class HighFreqTFPublisher(Node):
     def __init__(self):
-        super().__init__('improved_tf_publisher')
+        super().__init__('highfreq_tf_publisher')
         
         # 声明参数
         self.declare_parameter('poses_file', 
             '/workspace/data/gyc/thesis/rellis_3d/rellis_4class_100x100_2_sl50tr1/sequences/train/poses.txt')
-        self.declare_parameter('publish_rate', 30.0)  # 提高发布频率
+        self.declare_parameter('publish_rate', 50.0)  # 提高到50Hz
         
         # 获取参数
         poses_file = self.get_parameter('poses_file').value
@@ -31,7 +32,6 @@ class ImprovedTFPublisher(Node):
         
         # TF广播器
         self.tf_broadcaster = TransformBroadcaster(self)
-        self.static_tf_broadcaster = StaticTransformBroadcaster(self)
         
         # 加载poses
         self.poses = self.load_poses(poses_file)
@@ -49,28 +49,31 @@ class ImprovedTFPublisher(Node):
         # 里程计发布器
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
         
-        # AMCL位姿发布器（模拟定位）
+        # AMCL位姿发布器
         self.amcl_pose_pub = self.create_publisher(
             PoseWithCovarianceStamped, 
             '/amcl_pose', 
             10
         )
         
-        # 订阅点云以同步位置更新
+        # 订阅点云
+        sensor_qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1  # 减少队列深度
+        )
         self.pc_sub = self.create_subscription(
             PointCloud2,
             '/velodyne_points',
             self.pointcloud_callback,
-            10
+            sensor_qos
         )
         
-        # 定时发布TF
-        self.timer = self.create_timer(1.0/publish_rate, self.publish_transforms)
+        # 高频率发布所有TF（50Hz）
+        self.timer = self.create_timer(1.0/publish_rate, self.publish_all_transforms)
         
-        # 发布静态TF
-        self.publish_static_transforms()
-        
-        self.get_logger().info(f'Improved TF Publisher started')
+        self.get_logger().info(f'High-frequency TF Publisher started at {publish_rate}Hz')
         self.get_logger().info(f'Loaded {len(self.poses)} poses from {poses_file}')
         
         if len(self.poses) > 0:
@@ -91,19 +94,16 @@ class ImprovedTFPublisher(Node):
             values = [float(v) for v in line.strip().split()]
             
             if len(values) == 12:
-                # 构建4x4变换矩阵
                 pose_matrix = np.zeros((4, 4))
                 pose_matrix[0, 0:4] = values[0:4]
                 pose_matrix[1, 0:4] = values[4:8]
                 pose_matrix[2, 0:4] = values[8:12]
                 pose_matrix[3, 3] = 1.0
                 
-                # 提取位置
                 x = pose_matrix[0, 3]
                 y = pose_matrix[1, 3]
                 z = pose_matrix[2, 3]
                 
-                # 从旋转矩阵提取四元数
                 quat = self.rotation_matrix_to_quaternion(pose_matrix[:3, :3])
                 
                 poses.append({
@@ -147,7 +147,6 @@ class ImprovedTFPublisher(Node):
             y = (R[1, 2] + R[2, 1]) / s
             z = 0.25 * s
         
-        # 归一化
         norm = np.sqrt(w*w + x*x + y*y + z*z)
         if norm > 0:
             return [x/norm, y/norm, z/norm, w/norm]
@@ -168,52 +167,32 @@ class ImprovedTFPublisher(Node):
             self.current_pose_idx = idx
     
     def pointcloud_callback(self, msg):
-        """点云回调，用于同步位置更新"""
-        # 逐步更新位置（模拟机器人移动）
+        """点云回调，更新位姿"""
         if len(self.poses) > 0:
             self.current_pose_idx = (self.current_pose_idx + 1) % len(self.poses)
             self.update_robot_pose(self.current_pose_idx)
     
-    def publish_static_transforms(self):
-        """发布静态变换"""
-        transforms = []
-        
-        # map -> odom (静态，假设没有漂移)
-        t = TransformStamped()
-        t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = 'map'
-        t.child_frame_id = 'odom'
-        t.transform.translation.x = 0.0
-        t.transform.translation.y = 0.0
-        t.transform.translation.z = 0.0
-        t.transform.rotation.x = 0.0
-        t.transform.rotation.y = 0.0
-        t.transform.rotation.z = 0.0
-        t.transform.rotation.w = 1.0
-        transforms.append(t)
-        
-        # base_link -> velodyne (传感器安装位置)
-        t2 = TransformStamped()
-        t2.header.stamp = self.get_clock().now().to_msg()
-        t2.header.frame_id = 'base_link'
-        t2.child_frame_id = 'velodyne'
-        t2.transform.translation.x = 0.0
-        t2.transform.translation.y = 0.0
-        t2.transform.translation.z = 0.5
-        t2.transform.rotation.x = 0.0
-        t2.transform.rotation.y = 0.0
-        t2.transform.rotation.z = 0.0
-        t2.transform.rotation.w = 1.0
-        transforms.append(t2)
-        
-        self.static_tf_broadcaster.sendTransform(transforms)
-        self.get_logger().info('Published static transforms')
-    
-    def publish_transforms(self):
-        """发布动态变换"""
+    def publish_all_transforms(self):
+        """发布所有变换（高频率）"""
         current_time = self.get_clock().now().to_msg()
         
-        # 发布 odom -> base_link
+        transforms = []
+        
+        # map -> odom（静态变换，但高频发布）
+        map_to_odom = TransformStamped()
+        map_to_odom.header.stamp = current_time
+        map_to_odom.header.frame_id = 'map'
+        map_to_odom.child_frame_id = 'odom'
+        map_to_odom.transform.translation.x = 0.0
+        map_to_odom.transform.translation.y = 0.0
+        map_to_odom.transform.translation.z = 0.0
+        map_to_odom.transform.rotation.x = 0.0
+        map_to_odom.transform.rotation.y = 0.0
+        map_to_odom.transform.rotation.z = 0.0
+        map_to_odom.transform.rotation.w = 1.0
+        transforms.append(map_to_odom)
+        
+        # odom -> base_link（动态变换）
         odom_to_base = TransformStamped()
         odom_to_base.header.stamp = current_time
         odom_to_base.header.frame_id = 'odom'
@@ -225,57 +204,72 @@ class ImprovedTFPublisher(Node):
         odom_to_base.transform.rotation.y = self.robot_qy
         odom_to_base.transform.rotation.z = self.robot_qz
         odom_to_base.transform.rotation.w = self.robot_qw
+        transforms.append(odom_to_base)
         
-        self.tf_broadcaster.sendTransform(odom_to_base)
+        # base_link -> velodyne（静态变换）
+        base_to_velodyne = TransformStamped()
+        base_to_velodyne.header.stamp = current_time
+        base_to_velodyne.header.frame_id = 'base_link'
+        base_to_velodyne.child_frame_id = 'velodyne'
+        base_to_velodyne.transform.translation.x = 0.0
+        base_to_velodyne.transform.translation.y = 0.0
+        base_to_velodyne.transform.translation.z = 0.5
+        base_to_velodyne.transform.rotation.x = 0.0
+        base_to_velodyne.transform.rotation.y = 0.0
+        base_to_velodyne.transform.rotation.z = 0.0
+        base_to_velodyne.transform.rotation.w = 1.0
+        transforms.append(base_to_velodyne)
         
-        # 发布里程计消息
-        odom_msg = Odometry()
-        odom_msg.header.stamp = current_time
-        odom_msg.header.frame_id = 'odom'
-        odom_msg.child_frame_id = 'base_link'
+        # 一次性发布所有变换
+        self.tf_broadcaster.sendTransform(transforms)
         
-        odom_msg.pose.pose.position.x = self.robot_x
-        odom_msg.pose.pose.position.y = self.robot_y
-        odom_msg.pose.pose.position.z = self.robot_z
-        odom_msg.pose.pose.orientation.x = self.robot_qx
-        odom_msg.pose.pose.orientation.y = self.robot_qy
-        odom_msg.pose.pose.orientation.z = self.robot_qz
-        odom_msg.pose.pose.orientation.w = self.robot_qw
-        
-        # 设置协方差
-        odom_msg.pose.covariance[0] = 0.01  # x
-        odom_msg.pose.covariance[7] = 0.01  # y
-        odom_msg.pose.covariance[35] = 0.01  # yaw
-        
-        self.odom_pub.publish(odom_msg)
-        
-        # 发布AMCL位姿（模拟定位）
-        amcl_pose = PoseWithCovarianceStamped()
-        amcl_pose.header.stamp = current_time
-        amcl_pose.header.frame_id = 'map'
-        
-        amcl_pose.pose.pose.position.x = self.robot_x
-        amcl_pose.pose.pose.position.y = self.robot_y
-        amcl_pose.pose.pose.position.z = self.robot_z
-        amcl_pose.pose.pose.orientation.x = self.robot_qx
-        amcl_pose.pose.pose.orientation.y = self.robot_qy
-        amcl_pose.pose.pose.orientation.z = self.robot_qz
-        amcl_pose.pose.pose.orientation.w = self.robot_qw
-        
-        # 设置协方差
-        for i in range(36):
-            amcl_pose.pose.covariance[i] = 0.0
-        amcl_pose.pose.covariance[0] = 0.01  # x
-        amcl_pose.pose.covariance[7] = 0.01  # y
-        amcl_pose.pose.covariance[35] = 0.01  # yaw
-        
-        self.amcl_pose_pub.publish(amcl_pose)
+        # 发布里程计消息（降低频率，每5次调用发布一次）
+        if self.current_pose_idx % 5 == 0:
+            odom_msg = Odometry()
+            odom_msg.header.stamp = current_time
+            odom_msg.header.frame_id = 'odom'
+            odom_msg.child_frame_id = 'base_link'
+            
+            odom_msg.pose.pose.position.x = self.robot_x
+            odom_msg.pose.pose.position.y = self.robot_y
+            odom_msg.pose.pose.position.z = self.robot_z
+            odom_msg.pose.pose.orientation.x = self.robot_qx
+            odom_msg.pose.pose.orientation.y = self.robot_qy
+            odom_msg.pose.pose.orientation.z = self.robot_qz
+            odom_msg.pose.pose.orientation.w = self.robot_qw
+            
+            odom_msg.pose.covariance[0] = 0.01
+            odom_msg.pose.covariance[7] = 0.01
+            odom_msg.pose.covariance[35] = 0.01
+            
+            self.odom_pub.publish(odom_msg)
+            
+            # 发布AMCL位姿
+            amcl_pose = PoseWithCovarianceStamped()
+            amcl_pose.header.stamp = current_time
+            amcl_pose.header.frame_id = 'map'
+            
+            amcl_pose.pose.pose.position.x = self.robot_x
+            amcl_pose.pose.pose.position.y = self.robot_y
+            amcl_pose.pose.pose.position.z = self.robot_z
+            amcl_pose.pose.pose.orientation.x = self.robot_qx
+            amcl_pose.pose.pose.orientation.y = self.robot_qy
+            amcl_pose.pose.pose.orientation.z = self.robot_qz
+            amcl_pose.pose.pose.orientation.w = self.robot_qw
+            
+            for i in range(36):
+                amcl_pose.pose.covariance[i] = 0.0
+            amcl_pose.pose.covariance[0] = 0.01
+            amcl_pose.pose.covariance[7] = 0.01
+            amcl_pose.pose.covariance[35] = 0.01
+            
+            self.amcl_pose_pub.publish(amcl_pose)
 
 
 def main(args=None):
     rclpy.init(args=args)
     
-    node = ImprovedTFPublisher()
+    node = HighFreqTFPublisher()
     
     try:
         rclpy.spin(node)
