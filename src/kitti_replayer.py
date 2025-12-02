@@ -378,7 +378,7 @@ def main():
                        help='Sequence to play')
     parser.add_argument('--rate', '-r',
                        type=float,
-                       default=1.0,
+                       default=10.0,
                        help='Playback rate (Hz)')
     parser.add_argument('--loop', '-l',
                        action='store_true',

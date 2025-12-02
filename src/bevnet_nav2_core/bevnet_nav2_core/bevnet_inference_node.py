@@ -159,7 +159,7 @@ class BEVNetInferenceNode(Node):
         # 设置原点（左下角）
         costmap.info.origin.position.x = self.bev_x_range[0]
         costmap.info.origin.position.y = self.bev_y_range[0]
-        costmap.info.origin.position.z = 0.0
+        costmap.info.origin.position.z = -1.5
         costmap.info.origin.orientation.w = 1.0
         
         # 转换BEV输出为OccupancyGrid数据
