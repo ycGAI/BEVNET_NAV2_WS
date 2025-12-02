@@ -62,6 +62,27 @@ ros2 run gps_waypoint_nav gps_waypoint_follower \
     -p loop:=true
 
 
+# =====================不带nav2的==========================
+# 终端1
+python3 /workspace/bevnet_nav2_ws/src/tf_publisher.py
+
+# 终端2 发布kitti格式的数据
+python ./src/kitti_replayer.py /workspace/data/gyc/thesis/rellis_3d/rellis_4class_100x100_2_sl50tr1/ --sequence train --loop
+
+# 终端3 bevnet推理节点
+export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH
+python3 /workspace/bevnet_nav2_ws/src/bevnet_nav2_core/bevnet_nav2_core/bevnet_inference_node.py \
+    /workspace/bevnet_nav2_ws/models/best.pth.41 \
+    --with-safety
+
+# 终端4 gps跟随
+python3 src/gps_waypoint_nav/gps_waypoint_nav/gps_waypoint_follower.py     --ros-args     -p poses_file:=/workspace/data/gyc/thesis/rellis_3d/rellis_4class_100x100_2_sl50tr1/sequences/train/poses.txt     -p waypoint_spacing:=5.0     -p goal_tolerance:=2.0     -p loop:=true
+
+# 终端5 
+ros2 run local_planner local_planner
+
+
+
 
 # 重启后，可以这样直接启一个容器
 # 1. 必须先运行这个（重启后会失效）

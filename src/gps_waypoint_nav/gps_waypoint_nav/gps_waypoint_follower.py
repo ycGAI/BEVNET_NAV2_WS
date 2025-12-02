@@ -23,7 +23,7 @@ class GPSWaypointFollower(Node):
         self.declare_parameter('waypoint_spacing', 5.0)  # 路径点间隔（米）
         self.declare_parameter('skip_initial', 10)        # 跳过初始点数
         self.declare_parameter('loop', False)             # 是否循环路径
-        self.declare_parameter('publish_rate', 1.0)       # 发布频率（Hz）
+        self.declare_parameter('publish_rate', 5.0)       # 发布频率（Hz）
         
         # 获取参数
         poses_file = self.get_parameter('poses_file').value
@@ -136,7 +136,7 @@ class GPSWaypointFollower(Node):
         # 位置
         pose.pose.position.x = matrix[0, 3]
         pose.pose.position.y = matrix[1, 3]
-        pose.pose.position.z = 0.0  # 2D 导航
+        pose.pose.position.z = -1.5
         
         # 从旋转矩阵计算四元数
         R = matrix[:3, :3]

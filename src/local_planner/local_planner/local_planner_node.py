@@ -186,7 +186,7 @@ class LocalPlannerNode(Node):
             pose.header = path_msg.header
             pose.pose.position.x = point[0]
             pose.pose.position.y = point[1]
-            pose.pose.position.z = 0.0
+            pose.pose.position.z = -1.5
             path_msg.poses.append(pose)
         
         self.local_plan_pub.publish(path_msg)

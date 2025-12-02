@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BEVNet Inference ROS2 Node
+BEVNet Inference ROS2 Node - 支持行人检测
 """
 import sys
 import os
@@ -16,57 +16,90 @@ from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Header
 from cv_bridge import CvBridge
 import struct
+import argparse
 
-from bevnet.inference import BEVNetSingle, BEVNetRecurrent
+from bevnet.inference import BEVNetSingle, BEVNetSingleWithSafety, create_bevnet_model
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 
+
 class BEVNetInferenceNode(Node):
-    def __init__(self, model_path, model_type='single'):
+    def __init__(self, model_path, model_type='single', with_safety=False,
+                 safety_radius=1.5, human_confidence=10.0):
         super().__init__('bevnet_inference_node')
         
         # 参数
         self.model_path = model_path
         self.model_type = model_type
+        self.with_safety = with_safety
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         
         # 加载模型
         self.get_logger().info(f'Loading model from: {model_path}')
         self.get_logger().info(f'Model type: {model_type}')
+        self.get_logger().info(f'Human detection: {"ENABLED" if with_safety else "DISABLED"}')
         self.get_logger().info(f'Device: {self.device}')
         
         try:
-            if model_type == 'single':
-                self.model = BEVNetSingle(model_path, device=self.device)
+            if with_safety:
+                # 人员检测配置
+                human_detection_config = {
+                    'enabled': True,
+                    'height_range': (1.0, 2.5),
+                    'width_range': (0.2, 1.2),
+                    'min_points': 20,
+                    'ground_threshold': 0.2,
+                    'clustering_eps': 0.6,
+                    'clustering_min_samples': 5
+                }
+                
+                # 安全配置
+                safety_config = {
+                    'safety_radius': safety_radius,
+                    'human_confidence': human_confidence,
+                    'human_class': None
+                }
+                
+                self.model = create_bevnet_model(
+                    model_path,
+                    device=self.device,
+                    with_safety=True,
+                    human_detection_config=human_detection_config,
+                    safety_config=safety_config,
+                    model_type=model_type
+                )
+                self.get_logger().info(f'Safety config: radius={safety_radius}m, confidence={human_confidence}')
             else:
-                self.model = BEVNetRecurrent(model_path, device=self.device)
+                self.model = create_bevnet_model(
+                    model_path,
+                    device=self.device,
+                    with_safety=False,
+                    model_type=model_type
+                )
+            
             self.get_logger().info('Model loaded successfully!')
+            
         except Exception as e:
             self.get_logger().error(f'Failed to load model: {e}')
+            import traceback
+            self.get_logger().error(f'Traceback:\n{traceback.format_exc()}')
             return
         
         # ROS2设置
         self.bridge = CvBridge()
         
-        # 订阅点云
-        # self.pc_sub = self.create_subscription(
-        #     PointCloud2,
-        #     '/velodyne_points',
-        #     self.pointcloud_callback,
-        #     10
-        # )
-        # 配置QoS - 匹配发布器的BEST_EFFORT
+        # QoS配置
         qos_profile = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             durability=DurabilityPolicy.VOLATILE,
             depth=10
         )
 
-        # 订阅点云 - 使用兼容的QoS
+        # 订阅点云
         self.pc_sub = self.create_subscription(
             PointCloud2,
             '/velodyne_points',
             self.pointcloud_callback,
-            qos_profile  # 使用BEST_EFFORT而不是默认的RELIABLE
+            qos_profile
         )
         
         # 发布器
@@ -74,11 +107,15 @@ class BEVNetInferenceNode(Node):
         self.semantic_pub = self.create_publisher(Image, '/bevnet/semantic_image', 10)
         
         # BEV参数
-        self.bev_resolution = 0.05 # 米/像素
+        self.bev_resolution = 0.05
         self.bev_width = 407
         self.bev_height = 407
-        self.bev_x_range = (-10.2, 10.2)  # 米
-        self.bev_y_range = (-10.2, 10.2)  # 米
+        self.bev_x_range = (-10.2, 10.2)
+        self.bev_y_range = (-10.2, 10.2)
+        
+        # 统计
+        self.frame_count = 0
+        self.human_detection_count = 0
         
         self.get_logger().info('BEVNet inference node ready!')
     
@@ -92,30 +129,34 @@ class BEVNetInferenceNode(Node):
                 self.get_logger().warn('Empty point cloud received')
                 return
             
-            self.get_logger().info(f'Processing {len(points)} points...')
+            self.frame_count += 1
             
             # BEVNet推理
-            output = self.model.predict(points)
-            
-            # 调试：打印输出形状
-            self.get_logger().info(f'Model output shape: {output.shape}')
+            if self.with_safety:
+                # 带行人检测的推理
+                output, human_positions = self.model.predict(points, return_human_positions=True)
+                
+                if human_positions:
+                    self.human_detection_count += len(human_positions)
+                    self.get_logger().info(f'Frame {self.frame_count}: Detected {len(human_positions)} humans at {human_positions}')
+            else:
+                # 普通推理
+                output = self.model.predict(points)
             
             # 将CUDA张量转换为CPU numpy
             if torch.is_tensor(output):
                 output = output.cpu().numpy()
             
             # 处理输出维度
-            # BEVNet输出形状: [n, num_classes, H, W]，其中n=1
             if len(output.shape) == 4 and output.shape[0] == 1:
-                # 去掉批次维度: [1, C, H, W] -> [C, H, W]
                 output = output.squeeze(0)
-                self.get_logger().info(f'Squeezed output shape: {output.shape}')
             
             # 发布结果
             self.publish_costmap(output, msg.header)
             self.publish_semantic_image(output, msg.header)
             
-            self.get_logger().info(f'Published costmap and semantic image')
+            if self.frame_count % 50 == 0:
+                self.get_logger().info(f'Processed {self.frame_count} frames, total humans detected: {self.human_detection_count}')
         
         except Exception as e:
             self.get_logger().error(f'Processing failed: {e}')
@@ -125,20 +166,15 @@ class BEVNetInferenceNode(Node):
     def parse_pointcloud(self, msg):
         """解析PointCloud2消息为numpy数组"""
         points = []
-        
-        # 获取点云格式信息
         point_step = msg.point_step
         
-        # 解析二进制数据
         for i in range(0, len(msg.data), point_step):
-            # KITTI格式：x, y, z, intensity
             if i + 16 <= len(msg.data):
                 x = struct.unpack('f', msg.data[i:i+4])[0]
                 y = struct.unpack('f', msg.data[i+4:i+8])[0] 
                 z = struct.unpack('f', msg.data[i+8:i+12])[0]
                 intensity = struct.unpack('f', msg.data[i+12:i+16])[0]
                 
-                # 过滤无效点
                 if not np.isnan(x) and not np.isnan(y) and not np.isnan(z):
                     points.append([x, y, z, intensity])
         
@@ -146,60 +182,46 @@ class BEVNetInferenceNode(Node):
     
     def publish_costmap(self, bev_output, header):
         """发布OccupancyGrid格式的代价地图"""
-        # bev_output shape: [C, H, W]，其中C是类别数
-        
         costmap = OccupancyGrid()
         costmap.header = header
-        costmap.header.frame_id = "velodyne"  # 使用map而不是base_link
+        costmap.header.frame_id = "velodyne"
         
         costmap.info.resolution = self.bev_resolution
         costmap.info.width = self.bev_width
         costmap.info.height = self.bev_height
         
-        # 设置原点（左下角）
         costmap.info.origin.position.x = self.bev_x_range[0]
         costmap.info.origin.position.y = self.bev_y_range[0]
         costmap.info.origin.position.z = -1.5
         costmap.info.origin.orientation.w = 1.0
         
-        # 转换BEV输出为OccupancyGrid数据
-        # bev_output shape: [C, H, W]
         if len(bev_output.shape) == 3:
-            # 取最大概率的类别
-            bev_map = np.argmax(bev_output, axis=0)  # [H, W]
+            bev_map = np.argmax(bev_output, axis=0)
         else:
             bev_map = bev_output
         
         # 映射到代价值
-        # 根据您的模型，可能需要调整这些映射
-        # 0: free space -> 0
-        # 1: road -> 10  
-        # 2: vegetation/medium -> 50
-        # 3: obstacle -> 100
-        # 4: unknown -> -1
         cost_map = np.zeros_like(bev_map, dtype=np.int8)
-        cost_map[bev_map == 0] = 0    # free
-        cost_map[bev_map == 1] = 10   # road (low cost)
-        cost_map[bev_map == 2] = 50   # medium cost
-        cost_map[bev_map == 3] = 100  # obstacle
-        cost_map[bev_map == 4] = -1   # unknown
+        cost_map[bev_map == 0] = 0     # free
+        cost_map[bev_map == 1] = 10    # road
+        cost_map[bev_map == 2] = 50    # medium cost
+        cost_map[bev_map == 3] = 100   # obstacle / human (高危险)
+        cost_map[bev_map == 4] = -1    # unknown
         
-        # 展平并设置数据
         costmap.data = cost_map.flatten().tolist()
-        
         self.costmap_pub.publish(costmap)
     
     def publish_semantic_image(self, bev_output, header):
         """发布语义分割的彩色图像"""
-        # 颜色映射
+        # 颜色映射 - 添加人员检测的颜色
         colors = [
             [0, 255, 0],      # 绿色 - free space
             [128, 128, 128],  # 灰色 - road
-            [255, 0, 0],      # 红色 - obstacle
+            [255, 165, 0],    # 橙色 - medium cost (vegetation)
+            [255, 0, 0],      # 红色 - obstacle / human
             [0, 0, 255],      # 蓝色 - unknown
         ]
         
-        # 创建彩色图像
         if len(bev_output.shape) == 3:
             bev_map = np.argmax(bev_output, axis=0)
         else:
@@ -210,33 +232,47 @@ class BEVNetInferenceNode(Node):
             if i < np.max(bev_map) + 1:
                 color_image[bev_map == i] = color
         
-        # 转换为ROS消息
         img_msg = self.bridge.cv2_to_imgmsg(color_image, "rgb8")
         img_msg.header = header
-        
         self.semantic_pub.publish(img_msg)
 
+
 def main(args=None):
-    import argparse
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='BEVNet Inference Node with Optional Human Detection')
     parser.add_argument('model_path', type=str, help='Path to model file')
-    parser.add_argument('--model_type', type=str, default='single', choices=['single', 'recurrent'])
+    parser.add_argument('--model_type', '-t', type=str, default='single', 
+                        choices=['single', 'recurrent'],
+                        help='Model type (default: single)')
+    parser.add_argument('--with-safety', '-s', action='store_true',
+                        help='Enable human detection and safety features')
+    parser.add_argument('--safety-radius', '-r', type=float, default=1.5,
+                        help='Safety radius around detected humans in meters (default: 1.5)')
+    parser.add_argument('--human-confidence', '-c', type=float, default=10.0,
+                        help='Confidence value for human detection (default: 10.0)')
     
-    parsed_args = parser.parse_args()
+    # 解析参数（排除ROS2参数）
+    parsed_args, remaining = parser.parse_known_args()
     
-    rclpy.init(args=args)
+    # 初始化ROS2
+    rclpy.init(args=remaining)
     
-    node = BEVNetInferenceNode(parsed_args.model_path, parsed_args.model_type)
+    # 创建节点
+    node = BEVNetInferenceNode(
+        model_path=parsed_args.model_path,
+        model_type=parsed_args.model_type,
+        with_safety=parsed_args.with_safety,
+        safety_radius=parsed_args.safety_radius,
+        human_confidence=parsed_args.human_confidence
+    )
     
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        pass
+        node.get_logger().info('Shutting down...')
     finally:
         node.destroy_node()
         rclpy.shutdown()
 
+
 if __name__ == '__main__':
     main()
-# export PYTHONPATH=/workspace/bevnet:/workspace/bevnet/bevnet:$PYTHONPATH
-# ros2 run bevnet_nav2_core bevnet_inference_node.py /workspace/bevnet_nav2_ws/models/best.pth.34
